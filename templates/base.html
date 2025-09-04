@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Docent - Exam Management Platform{% endblock %}</title>
+    <title>{% block title %}MedSol{% endblock %}</title>
     
     <!-- Tailwind CSS -->
     <link href="{% load static %}{% static 'css/tailwind.css' %}" rel="stylesheet">
@@ -89,13 +89,13 @@
                     <ul class="mt-4 space-y-2">
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Features</a></li>
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Pricing</a></li>
-                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Security</a></li>
+                        {% comment %} <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Security</a></li> {% endcomment %}
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Support</h3>
                     <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Documentation</a></li>
+                        {% comment %} <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Documentation</a></li> {% endcomment %}
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Contact</a></li>
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Help Center</a></li>
                     </ul>
