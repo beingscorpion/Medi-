@@ -324,97 +324,123 @@
             </p>
         </div>
 
-        <div class="space-y-4">
-            <!-- FAQ Item 1 -->
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                    <span class="font-semibold text-gray-900">Is there a free trial available?</span>
-                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
-                    <p>Yes, you can try us for free for 30 days. If you want, we'll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 2 -->
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                    <span class="font-semibold text-gray-900">Can I change my plan later?</span>
-                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
-                    <p>Of course. Our pricing scales with your organization. You can upgrade or downgrade your plan at any time from your account settings. Changes will be prorated automatically.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 3 -->
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                    <span class="font-semibold text-gray-900">What is your cancellation policy?</span>
-                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
-                    <p>You can cancel your subscription at any time. There are no cancellation fees or long-term contracts. Your account will remain active until the end of your current billing period.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 4 -->
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                    <span class="font-semibold text-gray-900">Can other info be added to an invoice?</span>
-                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
-                    <p>Yes, you can add additional information to your invoices such as purchase order numbers, billing addresses, and tax information. This can be configured in your account settings.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 5 -->
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                    <span class="font-semibold text-gray-900">How does billing work?</span>
-                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
-                    <p>Plans are per workspace, not per account. You can upgrade one workspace, and still have any number of free workspaces. We accept all major credit cards and PayPal for payment.</p>
-                </div>
-            </div>
-
-            <!-- FAQ Item 6 -->
-            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
-                    <span class="font-semibold text-gray-900">How do I change my account email?</span>
-                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
-                    <p>You can change your account email in the account settings section. For security reasons, we'll send a confirmation email to both your old and new email addresses to verify the change.</p>
-                </div>
-            </div>
+    <!-- FAQ List -->
+    <div class="divide-y divide-transparent">
+      
+      <!-- Item 1 -->
+      <div class="py-4">
+        <button onclick="toggleFAQ(this)" 
+          class="w-full flex justify-between items-center text-left">
+          <span class="text-gray-900 font-semibold">Is there a free trial available?</span>
+          <svg class="w-6 h-6 text-gray-400 transition-transform duration-200" 
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="mt-3 text-gray-600 hidden">
+          Yes, you can try us free for 30 days. If you want, we’ll also provide a free, personalized 30-minute onboarding call.
         </div>
+      </div>
 
-        <div class="text-center mt-12">
-            <div class="bg-gray-50 rounded-2xl p-8">
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Still have questions?</h3>
-                <p class="text-gray-600 mb-6">Can't find the answer you're looking for? Please chat to our friendly team.</p>
-                <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors duration-200">
-                    Get in touch
-                </button>
-            </div>
+      <!-- Item 2 -->
+      <div class="py-4">
+        <button onclick="toggleFAQ(this)" 
+          class="w-full flex justify-between items-center text-left">
+          <span class="text-gray-900 font-semibold">Can I change my plan later?</span>
+          <svg class="w-6 h-6 text-gray-400 transition-transform duration-200" 
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="mt-3 text-gray-600 hidden">
+          Of course. You can upgrade or downgrade your plan anytime from your account settings. Changes will be prorated automatically.
         </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="py-4">
+        <button onclick="toggleFAQ(this)" 
+          class="w-full flex justify-between items-center text-left">
+          <span class="text-gray-900 font-semibold">What is your cancellation policy?</span>
+          <svg class="w-6 h-6 text-gray-400 transition-transform duration-200" 
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="mt-3 text-gray-600 hidden">
+          You can cancel anytime. No cancellation fees or long-term contracts — your account stays active until the end of your billing period.
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="py-4">
+        <button onclick="toggleFAQ(this)" 
+          class="w-full flex justify-between items-center text-left">
+          <span class="text-gray-900 font-semibold">Can other info be added to an invoice?</span>
+          <svg class="w-6 h-6 text-gray-400 transition-transform duration-200" 
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="mt-3 text-gray-600 hidden">
+          Yes, you can add purchase order numbers, billing addresses, or tax information in your account settings.
+        </div>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="py-4">
+        <button onclick="toggleFAQ(this)" 
+          class="w-full flex justify-between items-center text-left">
+          <span class="text-gray-900 font-semibold">How does billing work?</span>
+          <svg class="w-6 h-6 text-gray-400 transition-transform duration-200" 
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="mt-3 text-gray-600 hidden">
+          Plans are billed per workspace. We accept all major credit cards and PayPal. Billing recurs monthly unless canceled.
+        </div>
+      </div>
+
+      <!-- Item 6 -->
+      <div class="py-4">
+        <button onclick="toggleFAQ(this)" 
+          class="w-full flex justify-between items-center text-left">
+          <span class="text-gray-900 font-semibold">How do I change my account email?</span>
+          <svg class="w-6 h-6 text-gray-400 transition-transform duration-200" 
+            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <div class="mt-3 text-gray-600 hidden">
+          You can change your email in account settings. A confirmation email will be sent to both your old and new addresses.
+        </div>
+      </div>
+
     </div>
+  </div>
 </section>
+
+{% comment %} <script>
+function toggleFAQ(btn) {
+  const content = btn.nextElementSibling;
+  const circle = btn.querySelector(".faq-circle");
+
+  content.classList.toggle("hidden");
+
+  if (content.classList.contains("hidden")) {
+    circle.textContent = "+";
+  } else {
+    circle.textContent = "−"; // minus symbol
+  }
+}
+</script> {% endcomment %}
 {% endblock %}
            
 {% comment %} {% extends "base.html" %}
