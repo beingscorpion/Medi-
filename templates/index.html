@@ -1,0 +1,591 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Docent - Passing exams and certifications made easy{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50">
+    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                    Passing exams and certifications 
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+                        and tests has never been so easy
+                    </span>
+                </h1>
+                <p class="mt-6 text-xl text-gray-600 max-w-2xl">
+                    Streamline your examination process with our comprehensive platform designed for modern businesses and educational institutions.
+                </p>
+                <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        Register for demo
+                    </button>
+                    <button class="border-2 border-gray-300 hover:border-purple-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 bg-white hover:bg-purple-50">
+                        Watch tutorial
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Content - Dashboard Preview -->
+            <div class="relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-500 rounded-3xl transform rotate-6 opacity-20"></div>
+                <div class="relative bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-200">
+                    <div class="bg-gray-100 px-6 py-4 border-b border-gray-200">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold text-gray-900">Active Exams</h3>
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">24 Active</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                    <div class="text-2xl font-bold text-blue-600">156</div>
+                                    <div class="text-sm text-gray-600">Total Candidates</div>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg text-center">
+                                    <div class="text-2xl font-bold text-green-600">89%</div>
+                                    <div class="text-sm text-gray-600">Pass Rate</div>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg text-center">
+                                    <div class="text-2xl font-bold text-purple-600">42</div>
+                                    <div class="text-sm text-gray-600">Completed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Floating elements for visual appeal -->
+                <div class="absolute -top-4 -right-4 w-20 h-20 bg-yellow-300 rounded-full opacity-60 animate-pulse"></div>
+                <div class="absolute -bottom-6 -left-6 w-16 h-16 bg-blue-400 rounded-full opacity-40 animate-bounce"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- For Your Business Section -->
+<section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">For Your Business</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Comprehensive solutions designed to meet your organization's examination and certification needs
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Share your insights</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Get detailed analytics and insights about candidate performance, exam effectiveness, and learning outcomes.
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-gradient-to-br from-amber-50 to-orange-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-amber-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Create new tests</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Build comprehensive tests and examinations with our intuitive question builder and assessment tools.
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-gray-800 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">QA Office Setup</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Establish quality assurance processes and maintain examination standards with our compliance tools.
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-green-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Know before hand</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Get predictive insights and early warning systems to identify at-risk candidates and optimize outcomes.
+                </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="bg-gradient-to-br from-purple-50 to-violet-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Improve student strategies</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Help students develop better learning strategies with personalized recommendations and progress tracking.
+                </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="bg-gradient-to-br from-yellow-50 to-amber-100 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 group">
+                <div class="w-16 h-16 bg-yellow-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Over 150 Courses</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Access a comprehensive library of pre-built courses and examinations across various subjects and industries.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trusted Companies Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Trusted Companies from around the world</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Helping organizations optimize their examination and certification processes across industries and sectors
+            </p>
+        </div>
+
+        <!-- Company Logos Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center justify-items-center opacity-60 hover:opacity-80 transition-opacity duration-300">
+            <!-- Row 1 -->
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-blue-600 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-red-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-green-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-purple-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-yellow-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-indigo-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-pink-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-orange-500 rounded"></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center justify-items-center opacity-60 hover:opacity-80 transition-opacity duration-300 mt-8">
+            <!-- Row 2 -->
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-teal-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-cyan-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-emerald-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-violet-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-amber-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-lime-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-rose-500 rounded"></div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
+                <div class="w-12 h-8 bg-slate-500 rounded"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">What do our clients think of us</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Testimonial 1 -->
+            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8">
+                <div class="flex items-start space-x-4">
+                    <img class="w-16 h-16 rounded-full object-cover" src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" alt="Sarah Chen">
+                    <div class="flex-1">
+                        <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                            "Our certification processes have never been smoother. The platform's intuitive design and robust analytics have transformed how we manage our training programs."
+                        </p>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Michael Rodriguez</h4>
+                            <p class="text-gray-600">Director of Learning, EduTech Solutions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Problem Solving CTA Section -->
+<section id="cta" class="py-20 bg-gradient-to-br from-purple-600 via-purple-700 to-blue-700 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
+    <div class="absolute top-10 left-10 w-32 h-32 bg-white bg-opacity-10 rounded-full"></div>
+    <div class="absolute bottom-10 right-10 w-24 h-24 bg-white bg-opacity-10 rounded-full"></div>
+    <div class="absolute top-1/2 left-1/4 w-4 h-4 bg-white bg-opacity-30 rounded-full"></div>
+    <div class="absolute top-1/3 right-1/3 w-3 h-3 bg-white bg-opacity-40 rounded-full"></div>
+    <div class="absolute bottom-1/4 left-1/2 w-2 h-2 bg-white bg-opacity-50 rounded-full"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            Let's solve<br>
+            your problem<br>
+            together
+        </h2>
+        <p class="text-lg md:text-xl text-purple-100 mb-8 max-w-2xl mx-auto leading-relaxed">
+            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
+            Exercitation veniam consequat sunt nostrud amet.
+        </p>
+        <button class="bg-white hover:bg-gray-100 text-purple-600 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl">
+            Request a demo
+        </button>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Choose the plan that's right for your organization. All plans include our core features with flexible scaling options.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Starter Plan -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-all duration-300">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Starter</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-gray-900">$29</span>
+                        <span class="text-gray-600">/month</span>
+                    </div>
+                    <p class="text-gray-600 mb-8">Perfect for small teams getting started with online examinations</p>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Up to 100 candidates
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        10 active exams
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Basic analytics
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Email support
+                    </li>
+                </ul>
+                <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-xl font-semibold transition-colors duration-200">
+                    Get Started
+                </button>
+            </div>
+
+            <!-- Professional Plan -->
+            <div class="bg-white rounded-2xl shadow-xl border-2 border-purple-200 p-8 relative hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                        Most Popular
+                    </span>
+                </div>
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Professional</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-gray-900">$79</span>
+                        <span class="text-gray-600">/month</span>
+                    </div>
+                    <p class="text-gray-600 mb-8">Ideal for growing organizations with advanced examination needs</p>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Up to 1,000 candidates
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Unlimited active exams
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Advanced analytics & insights
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Custom branding
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Priority support
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        API access
+                    </li>
+                </ul>
+                <button class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg">
+                    Get Started
+                </button>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-all duration-300">
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Enterprise</h3>
+                    <div class="mb-6">
+                        <span class="text-4xl font-bold text-gray-900">Custom</span>
+                    </div>
+                    <p class="text-gray-600 mb-8">Tailored solutions for large enterprises with specific requirements</p>
+                </div>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Unlimited candidates
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        White-label solution
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Custom integrations
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Dedicated account manager
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        24/7 phone support
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        On-premise deployment
+                    </li>
+                </ul>
+                <button class="w-full bg-gray-800 hover:bg-gray-900 text-white py-3 px-6 rounded-xl font-semibold transition-colors duration-200">
+                    Contact Sales
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <p class="text-gray-600 mb-4">All plans include a 14-day free trial. No credit card required.</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 text-sm text-gray-500">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    No setup fees
+                </span>
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Cancel anytime
+                </span>
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Secure & compliant
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently asked questions</h2>
+            <p class="text-xl text-gray-600">
+                Everything you need to know about the product and billing.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- FAQ Item 1 -->
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
+                    <span class="font-semibold text-gray-900">Is there a free trial available?</span>
+                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
+                    <p>Yes, you can try us for free for 30 days. If you want, we'll provide you with a free, personalized 30-minute onboarding call to get you up and running as soon as possible.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
+                    <span class="font-semibold text-gray-900">Can I change my plan later?</span>
+                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
+                    <p>Of course. Our pricing scales with your organization. You can upgrade or downgrade your plan at any time from your account settings. Changes will be prorated automatically.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
+                    <span class="font-semibold text-gray-900">What is your cancellation policy?</span>
+                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
+                    <p>You can cancel your subscription at any time. There are no cancellation fees or long-term contracts. Your account will remain active until the end of your current billing period.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
+                    <span class="font-semibold text-gray-900">Can other info be added to an invoice?</span>
+                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
+                    <p>Yes, you can add additional information to your invoices such as purchase order numbers, billing addresses, and tax information. This can be configured in your account settings.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
+                    <span class="font-semibold text-gray-900">How does billing work?</span>
+                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
+                    <p>Plans are per workspace, not per account. You can upgrade one workspace, and still have any number of free workspaces. We accept all major credit cards and PayPal for payment.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                <button class="faq-button w-full px-6 py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200" onclick="toggleFAQ(this)">
+                    <span class="font-semibold text-gray-900">How do I change my account email?</span>
+                    <svg class="faq-icon w-6 h-6 text-gray-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div class="faq-content px-6 pb-5 text-gray-600 hidden">
+                    <p>You can change your account email in the account settings section. For security reasons, we'll send a confirmation email to both your old and new email addresses to verify the change.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <div class="bg-gray-50 rounded-2xl p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Still have questions?</h3>
+                <p class="text-gray-600 mb-6">Can't find the answer you're looking for? Please chat to our friendly team.</p>
+                <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors duration-200">
+                    Get in touch
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+           
+{% comment %} {% extends "base.html" %}
+
+{% block title %}Home{% endblock title %} 
+
+
+{% block body %}
+Hello this is nww
+{% endblock body %}
+
+
+ {% endcomment %}

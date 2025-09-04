@@ -1,0 +1,13 @@
+node_modules
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
+db/
+.env
+venv/
+.venv/
+node_modules/
+staticfiles/
+static/css/tailwind.css

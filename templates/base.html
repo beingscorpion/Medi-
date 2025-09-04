@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Docent - Exam Management Platform{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="{% load static %}{% static 'css/tailwind.css' %}" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{% load static %}{% static 'css/custom.css' %}" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="font-inter bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="Docent">
+                    </div>
+                    <div class="hidden md:block ml-10">
+                        <div class="flex items-baseline space-x-8">
+                            <a href="#" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">How it Works</a>
+                            <a href="#" class="text-gray-600 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Features</a>
+                            <a href="#" class="text-gray-600 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Why Us</a>
+                            <a href="#" class="text-gray-600 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Pricing</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-purple-600 text-sm font-medium transition-colors">Contact Sales</a>
+                    <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="mobile-menu hidden md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+                <a href="#" class="text-gray-900 hover:text-purple-600 block px-3 py-2 text-base font-medium">How it Works</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Features</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Why Us</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Pricing</a>
+                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Contact Sales</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="Docent">
+                    <p class="mt-4 text-gray-600 text-sm max-w-md">
+                        Making exam management and certification processes easier and more efficient for businesses worldwide.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Product</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Features</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Pricing</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Support</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Documentation</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Contact</a></li>
+                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-200 pt-8">
+                <p class="text-center text-sm text-gray-600">
+                    © {% now "Y" %} Medsol. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+
+
