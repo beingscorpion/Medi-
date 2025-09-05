@@ -19,19 +19,19 @@
 //         });
 //     }
     
-//     // Smooth scrolling for anchor links
-//     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-//         anchor.addEventListener('click', function(e) {
-//             e.preventDefault();
-//             const target = document.querySelector(this.getAttribute('href'));
-//             if (target) {
-//                 target.scrollIntoView({
-//                     behavior: 'smooth',
-//                     block: 'start'
-//                 });
-//             }
-//         });
-//     });
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
     
 //     // Intersection Observer for animations
 //     const observerOptions = {
@@ -288,6 +288,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const elementPosition = target.offsetTop;
                 const offsetPosition = elementPosition - headerOffset;
 
+                const middlePosition = absoluteElementTop 
+                - (window.innerHeight / 2) 
+                + (target.offsetHeight / 2) 
+                - headerOffset;
+
                 window.scrollTo({
                     top: offsetPosition,
                     behavior: 'smooth'
@@ -508,3 +513,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize any third-party libraries or additional functionality
     console.log('Docent frontend initialized successfully');
 });
+
+

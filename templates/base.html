@@ -22,29 +22,31 @@
     <!-- Navigation -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="Docent">
-                    </div>
-                    <div class="hidden md:block ml-10">
-                        <div class="flex items-baseline space-x-8">
-                            <a href="#" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">How it Works</a>
-                            <a href="#" class="text-gray-600 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Features</a>
-                            <a href="#" class="text-gray-600 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Why Us</a>
-                            <a href="#" class="text-gray-600 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Pricing</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right side -->
-                <div class="flex items-center space-x-4">
-                    <a href="#" class="text-gray-600 hover:text-purple-600 text-sm font-medium transition-colors">Contact Sales</a>
-                    <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
-                        Get Started
-                    </button>
-                </div>
+          <div class="flex justify-between items-center h-16">
+            
+            <!-- Left: Logo -->
+            <div class="flex-shrink-0">
+              <img class="h-8 w-auto" src="{% static 'images/logo.svg' %}" alt="Docent">
+            </div>
+      
+            <!-- Middle: Navigation links -->
+            <div class=" md:flex space-x-8">
+              <a href="#Features" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Features</a>
+              <a href="#WhyUs" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Why Us</a>
+              <a href="#Pricing" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Pricing</a>
+              <a href="#FAQ" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">FAQ</a>
+            </div>
+      
+            <!-- Right: Login -->
+            <div>
+              <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+                Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
@@ -60,11 +62,10 @@
         <!-- Mobile menu -->
         <div class="mobile-menu hidden md:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-                <a href="#" class="text-gray-900 hover:text-purple-600 block px-3 py-2 text-base font-medium">How it Works</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Features</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Why Us</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Pricing</a>
-                <a href="#" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Contact Sales</a>
+                <a href="#Features" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Features</a>
+                <a href="#Why Us" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Why Us</a>
+                <a href="#Pricing" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Pricing</a>
+                <a href="#FAQ" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">FAQ</a>
             </div>
         </div>
     </nav>
