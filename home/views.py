@@ -1,3 +1,25 @@
+# --- Popup Login Views ---
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/dashboard/')
+        else:
+            messages.error(request, 'Invalid email or password')
+            return redirect('/')
+    return redirect('/')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'dashboard/dashboard.html')
 from django.shortcuts import render , HttpResponse
 from home.models import Contact
 
