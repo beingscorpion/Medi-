@@ -31,15 +31,15 @@
       
             <!-- Middle: Navigation links -->
             <div class=" md:flex space-x-8">
-              <a href="#Features" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Features</a>
-              <a href="#WhyUs" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Why Us</a>
-              <a href="#Pricing" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Pricing</a>
-              <a href="#FAQ" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">FAQ</a>
+              <a href="/#Features" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Features</a>
+              <a href="/#WhyUs" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Why Us</a>
+              <a href="/#Pricing" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">Pricing</a>
+              <a href="/#FAQ" class="text-gray-900 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">FAQ</a>
             </div>
       
             <!-- Right: Login -->
             <div>
-              <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+              <button name="login" onclick="window.location.href='{{ login }}'" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
                 Login
               </button>
             </div>
@@ -62,10 +62,10 @@
         <!-- Mobile menu -->
         <div class="mobile-menu hidden md:hidden">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
-                <a href="#Features" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Features</a>
-                <a href="#Why Us" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Why Us</a>
-                <a href="#Pricing" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Pricing</a>
-                <a href="#FAQ" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">FAQ</a>
+                <a href="/#Features" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Features</a>
+                <a href="/#Why Us" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Why Us</a>
+                <a href="/#Pricing" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">Pricing</a>
+                <a href="/#FAQ" class="text-gray-600 hover:text-purple-600 block px-3 py-2 text-base font-medium">FAQ</a>
             </div>
         </div>
     </nav>
@@ -86,7 +86,7 @@
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Product</h3>
+                    <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Service</h3>
                     <ul class="mt-4 space-y-2">
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Features</a></li>
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Pricing</a></li>
@@ -97,7 +97,7 @@
                     <h3 class="text-sm font-semibold text-gray-900 tracking-wider uppercase">Support</h3>
                     <ul class="mt-4 space-y-2">
                         {% comment %} <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Documentation</a></li> {% endcomment %}
-                        <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Contact</a></li>
+                        <li><a href="/contact" class="text-sm text-gray-600 hover:text-purple-600">Contact</a></li>
                         <li><a href="#" class="text-sm text-gray-600 hover:text-purple-600">Help Center</a></li>
                     </ul>
                 </div>
