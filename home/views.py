@@ -1,4 +1,6 @@
 from django.shortcuts import render , HttpResponse
+from django.core.exceptions import ValidationError
+from django.contrib import messages
 from home.models import Contact
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -8,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
+
 
 # Create your views here.
 def index(request):
@@ -31,6 +34,23 @@ def contact(request):
         
     return render(request , "contact.html")
     # return HttpResponse("about page pe aa gai")
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/dashboard/')
+        else:
+            messages.error(request, 'Invalid email or password')
+            return redirect('/')
+    return redirect('/')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'dashboard/dashboard.html')
 
 
 # views.py - Example views for the homepage and other pages

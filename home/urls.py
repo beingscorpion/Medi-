@@ -25,9 +25,9 @@ urlpatterns = [
     
     # Main pages
     path('', views.index, name='index'),
-    path('contact', views.contact , name='contact' )
+    path('contact', views.contact , name='contact' ),
     # path('login/', views.login.as_view(), name='login'),
-  
+    path('login/', views.login_view, name='login')
     
     # Dashboard (requires authentication)
     # path('dashboard/', views.DashboardView.as_view(), name='dashboard'),

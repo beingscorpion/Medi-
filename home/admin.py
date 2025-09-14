@@ -5,7 +5,7 @@ from home.models import Contact
 
 
 class ContactFormAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'email', 'message')
+    list_display = ('id', 'name', 'email', 'phone', 'message')
     search_fields = ('name', 'phone', 'message')
     list_filter = ('name',)
 
