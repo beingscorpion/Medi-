@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Select Paper Type</title>
+    <title>Select Question Type</title>
     {% load static %}
     <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
     <link href="{% static 'css/custom.css' %}" rel="stylesheet">
@@ -177,7 +177,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>Select Paper Type</h1>
+            <h1>Select Question Type</h1>
             <p>Choose the type of questions you want to practice</p>
         </div>
 
@@ -190,23 +190,25 @@
         </div>
 
         <div class="paper-options">
-            <a href="/mcq/{{ chapter_slug }}/past-papers/" class="paper-card">
+
+            <a href="/mcq/{{ chapter_slug }}/mcq/" class="paper-card">
                 <div class="paper-icon">📄</div>
-                <h3>Past Papers</h3>
-                <p>Practice with questions from previous exams and tests. Get familiar with the exam pattern and difficulty level.</p>
+                <h3>MCQ</h3>
+                <p>Practice with multiple choice questions. Get familiar with the questions and the options.</p>
             </a>
 
-            <a href="/mcq/{{ chapter_slug }}/subject-paper/" class="paper-card">
-                <div class="paper-icon">📝</div>
-                <h3>Subject Paper</h3>
-                <p>Comprehensive subject-based questions covering all topics. Perfect for thorough preparation and revision.</p>
+            <a href="/mcq/{{ chapter_slug }}/book-line-mcq/" class="paper-card">
+                <div class="paper-icon">📄</div>
+                <h3>Book Line MCQ</h3>
+                <p>Practice with questions from the book. Get familiar with the book and the questions. Questions are in the book line format.</p>
             </a>
 
-            <a href="/mcq/{{ chapter_slug }}/theory-paper/" class="paper-card">
-                <div class="paper-icon">📖</div>
-                <h3>Theory Paper</h3>
-                <p>Focus on theoretical concepts and explanations. Ideal for understanding fundamental principles and concepts.</p>
+            <a href="/mcq/{{ chapter_slug }}/past-paper-mcq/" class="paper-card">
+                <div class="paper-icon">📄</div>
+                <h3>Past Paper MCQ</h3>
+                <p>Practice with questions from previous exams and tests. Get familiar with the exam pattern and difficulty level. Questions are from previous exams and tests.</p>
             </a>
+
         </div>
     </div>
 

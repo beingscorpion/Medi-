@@ -1,7 +1,6 @@
 from django.shortcuts import render , HttpResponse, redirect
 from django.core.exceptions import ValidationError
 from django.contrib import messages
-from home.models import Contact
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout as django_logout
@@ -12,7 +11,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.db.models import Count, Q
 import json
+from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats , Contact
 
 
 # Create your views here.
@@ -92,7 +93,94 @@ def contact(request):
 
 # @login_required
 def dashboard_view(request):
-    return render(request, 'dashboard/dashboard.html')
+    # chapters = Chapter.objects.filter(subject__name=subject_name)
+    # total_questions = Question.objects.filter(chapter__subject__name=subject_name).count()
+    
+    # user_attempts = UserQuestionAttempt.objects.filter(
+    #     user=user,
+    #     question__chapter__subject__name=subject_name
+    # )
+    # completed = user_attempts.count()
+    # pending = total_questions - completed
+
+    
+    
+    # Get user (or None if not authenticated)
+    user = request.user if request.user.is_authenticated else None
+    
+    # Get all subjects
+    subjects = Subject.objects.all().order_by('name')
+    
+    # Prepare subject data with chapters and stats
+    subjects_data = {}
+    
+    for subject in subjects:
+        # Get all chapters for this subject
+        chapters = Chapter.objects.filter(subject=subject).order_by('chapter_no')
+        
+        # Calculate subject-level stats
+        total_questions = Question.objects.filter(chapter__subject=subject).count()
+        
+        if user:
+            user_attempts = UserQuestionAttempt.objects.filter(
+                user=user,
+                question__chapter__subject=subject
+            )
+            completed = user_attempts.count()
+            pending = total_questions - completed
+        else:
+            completed = 0
+            pending = total_questions
+        
+        # Prepare chapter data with stats
+        chapters_data = []
+        for chapter in chapters:
+            # Get or create user stats for this chapter
+            if user:
+                stats, created = UserChapterStats.objects.get_or_create(
+                    user=user,
+                    chapter=chapter
+                )
+                if created or stats.total_questions == 0:
+                    stats.update_stats()
+                
+                chapter_stats = {
+                    'total': stats.total_questions,
+                    'completed': stats.attempted,
+                    'pending': stats.pending,
+                    'score': float(stats.score_percentage)
+                }
+            else:
+                # For non-authenticated users, just show total questions
+                total_chapter_questions = chapter.questions.count()
+                chapter_stats = {
+                    'total': total_chapter_questions,
+                    'completed': 0,
+                    'pending': total_chapter_questions,
+                    'score': 0
+                }
+            
+            chapters_data.append({
+                'chapter': chapter,
+                'stats': chapter_stats
+            })
+        
+        subjects_data[subject.name] = {
+            'subject': subject,
+            'chapters': chapters_data,
+            'stats': {
+                'total': total_questions,
+                'completed': completed,
+                'pending': pending
+            }
+        }
+    
+    context = {
+        'subjects_data': subjects_data,
+        'user': user
+    }
+    
+    return render(request, 'dashboard/dashboard.html', context)
 
 
 def paper_selection_view(request, slug=None):
@@ -139,67 +227,13 @@ def paper_selection_view(request, slug=None):
     return render(request, 'paper_selection.html', context)
 
 
-def mcq_view(request, slug=None, paper_type=None):
+def mcq_view(request, slug, paper_type):
     """
     MCQ page. Accepts chapter slug and paper type to load appropriate questions.
     """
-    # TODO: replace this mock data with DB-backed questions filtered by slug/chapter
-    questions = [
-        {
-            "id": 1,
-            "question": "Which planet in our Solar System is known as the 'Red Planet' due to its reddish appearance?",
-            "options": [
-                {"key": "A", "label": "A. Jupiter"},
-                {"key": "B", "label": "B. Mars"},
-                {"key": "C", "label": "C. Venus"},
-                {"key": "D", "label": "D. Saturn"},
-            ],
-            "correct": "B",
-            "explanation": "Mars looks red because of iron oxide (rust) on its surface.",
-        },
-        {
-            "id": 2,
-            "question": "What gas do plants primarily absorb for photosynthesis?",
-            "options": [
-                {"key": "A", "label": "A. Oxygen"},
-                {"key": "B", "label": "B. Nitrogen"},
-                {"key": "C", "label": "C. Carbon Dioxide"},
-                {"key": "D", "label": "D. Hydrogen"},
-            ],
-            "correct": "C",
-            "explanation": "Plants absorb carbon dioxide and release oxygen during photosynthesis.",
-        },
-        {
-            "id": 3,
-            "question": "For the quadratic function $f(x) = e^{x^2} - \\varepsilon x + \\dfrac{3}{x}$ with $\\varepsilon > 0$, which statement is true about its behavior as $x \\to +\\infty$?",
-            "options": [
-                {"key": "A", "label": "A. $f(x)$ is dominated by $\\dfrac{3}{x}$ so $f(x) \\to 0$"},
-                {"key": "B", "label": "B. $f(x)$ grows like $-\\varepsilon x$ so $f(x) \\to -\\infty$"},
-                {"key": "C", "label": "C. $f(x)$ grows like $e^{x^2}$ so $f(x) \\to +\\infty$"},
-                {"key": "D", "label": "D. $f(x)$ oscillates because of the fraction term"},
-            ],
-            "correct": "C",
-            "explanation": "As $x \\to +\\infty$, the dominant term is $e^{x^2}$, which outgrows both the linear term $\\varepsilon x$ and the fractional term $\\dfrac{3}{x}$, so $f(x) \\to +\\infty$.",
-        },
-    ]
-
-    # Map paper types to test titles
-    paper_titles = {
-        'past-papers': 'Past Papers',
-        'subject-paper': 'Subject Paper',
-        'theory-paper': 'Theory Paper',
-    }
-    
-    # Build test title
-    chapter_name = slug.replace('-', ' ').title() if slug else 'Chapter'
-    paper_name = paper_titles.get(paper_type, 'Practice Test')
-    test_title = f"{paper_name} - {chapter_name}"
-    
+    questions = Question.objects.filter(chapter__slug=slug, paper_type=paper_type)
     context = {
-        "slug": slug,
-        "paper_type": paper_type,
-        "questions_json": json.dumps(questions),
-        "test_title": test_title,
+        'questions': questions,
     }
     return render(request, 'mcq.html', context)
 
@@ -210,7 +244,38 @@ def mcq_view(request, slug=None, paper_type=None):
 
 
 
+# def get_subject_stats(user, subject_name):
+#     chapters = Chapter.objects.filter(subject__name=subject_name)
+#     total_questions = Question.objects.filter(chapter__subject__name=subject_name).count()
+    
+#     user_attempts = UserQuestionAttempt.objects.filter(
+#         user=user,
+#         question__chapter__subject__name=subject_name
+#     )
+#     completed = user_attempts.count()
+#     pending = total_questions - completed
+    
+#     return {
+#         'total': total_questions,
+#         'completed': completed,
+#         'pending': pending
+#     }
 
+
+# def get_chapter_stats(user, chapter_slug):
+#     chapter = Chapter.objects.get(slug=chapter_slug)
+#     stats, created = UserChapterStats.objects.get_or_create(
+#         user=user,
+#         chapter=chapter
+#     )
+#     stats.update_stats()  # Recalculate
+    
+#     return {
+#         'total': stats.total_questions,
+#         'completed': stats.attempted,
+#         'pending': stats.pending,
+#         'score': stats.score_percentage
+#     }
 
 
 

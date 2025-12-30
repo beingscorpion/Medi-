@@ -39,22 +39,4 @@ urlpatterns = [
     # path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
 ]
   
-    # App-specific URLs (add your apps here)
-    # path('exams/', include('apps.exams.urls')),
-    # path('users/', include('apps.users.urls')),
-    # path('certificates/', include('apps.certificates.urls')),
-# ]
-
-# # Serve static and media files in development
-# if settings.DEBUG:
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
-#     # Add debug toolbar URLs if installed
-#     try:
-#         import debug_toolbar
-#         urlpatterns = [
-#             path('__debug__/', include(debug_toolbar.urls)),
-#         ] + urlpatterns
-#     except ImportError:
-#         pass
+   

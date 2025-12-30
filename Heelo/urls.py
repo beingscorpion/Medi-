@@ -17,14 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path , include
 
-admin.site.site_header = "Faaki"
-admin.site.site_title = "dsadas Portal"
-admin.site.index_title = "Welcome to UMSRA Researcher Portal"
+admin.site.site_header = "Medsol"
+admin.site.site_title = "Medsol Portal"
+admin.site.index_title = "Welcome to BackHouse"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('' , include("home.urls")),
-    # path('login/' , include("home.urls")),
     path('contact' , include("home.urls"))
 
 ]

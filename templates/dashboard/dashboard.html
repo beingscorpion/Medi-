@@ -449,26 +449,27 @@
             </div>
 
             <!-- Biology Tab Content -->
+            {% if subjects_data.Biology %}
             <div class="tab-content active" data-content="Biology">
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-icon total">📊</div>
                         <div class="stat-info">
-                            <h3 id="biology-total">45</h3>
+                            <h3 id="biology-total">{{ subjects_data.Biology.stats.total }}</h3>
                             <p>Total Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon pending">⏳</div>
                         <div class="stat-info">
-                            <h3 id="biology-pending">7</h3>
+                            <h3 id="biology-pending">{{ subjects_data.Biology.stats.pending }}</h3>
                             <p>Pending Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon completed">✅</div>
                         <div class="stat-info">
-                            <h3 id="biology-completed">38</h3>
+                            <h3 id="biology-completed">{{ subjects_data.Biology.stats.completed }}</h3>
                             <p>Completed</p>
                         </div>
                     </div>
@@ -479,101 +480,67 @@
                 </div>
 
                 <div class="subjects-grid" id="biology-chapters">
-                    <div class="subject-card" data-chapter="cell-biology">
+                    {% for chapter_data in subjects_data.Biology.chapters %}
+                    <div class="subject-card" data-chapter="{{ chapter_data.chapter.slug }}">
                         <div class="subject-header">
                             <div class="subject-icon biology">🧬</div>
                             <div class="subject-info">
-                                <h3>Cell Biology</h3>
-                                <p>Cell Structure, Organelles, Functions</p>
+                                <h3>{{ chapter_data.chapter.title }}</h3>
+                                <p>{% if chapter_data.chapter.description %}{{ chapter_data.chapter.description }}{% else %}Chapter {{ chapter_data.chapter.chapter_no }}{% endif %}</p>
                             </div>
                         </div>
                         <div class="subject-stats">
                             <div class="subject-stat">
-                                <div class="number">15</div>
+                                <div class="number">{{ chapter_data.stats.total }}</div>
                                 <div class="label">Questions</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">12</div>
+                                <div class="number">{{ chapter_data.stats.completed }}</div>
                                 <div class="label">Completed</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">85%</div>
+                                <div class="number">{{ chapter_data.stats.score|floatformat:0 }}%</div>
                                 <div class="label">Score</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="genetics">
+                    {% empty %}
+                    <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-icon biology">🧬</div>
                             <div class="subject-info">
-                                <h3>Genetics</h3>
-                                <p>DNA, RNA, Inheritance Patterns</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">18</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">15</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">92%</div>
-                                <div class="label">Score</div>
+                                <h3>No Chapters Available</h3>
+                                <p>Add chapters for Biology in the admin panel</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="ecology">
-                        <div class="subject-header">
-                            <div class="subject-icon biology">🧬</div>
-                            <div class="subject-info">
-                                <h3>Ecology</h3>
-                                <p>Ecosystems, Food Chains, Biomes</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">12</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">11</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">88%</div>
-                                <div class="label">Score</div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- Chemistry Tab Content -->
+            {% if subjects_data.Chemistry %}
             <div class="tab-content" data-content="Chemistry">
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-icon total">📊</div>
                         <div class="stat-info">
-                            <h3 id="chemistry-total">38</h3>
+                            <h3 id="chemistry-total">{{ subjects_data.Chemistry.stats.total }}</h3>
                             <p>Total Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon pending">⏳</div>
                         <div class="stat-info">
-                            <h3 id="chemistry-pending">6</h3>
+                            <h3 id="chemistry-pending">{{ subjects_data.Chemistry.stats.pending }}</h3>
                             <p>Pending Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon completed">✅</div>
                         <div class="stat-info">
-                            <h3 id="chemistry-completed">32</h3>
+                            <h3 id="chemistry-completed">{{ subjects_data.Chemistry.stats.completed }}</h3>
                             <p>Completed</p>
                         </div>
                     </div>
@@ -584,101 +551,67 @@
                 </div>
 
                 <div class="subjects-grid" id="chemistry-chapters">
-                    <div class="subject-card" data-chapter="organic-chemistry">
+                    {% for chapter_data in subjects_data.Chemistry.chapters %}
+                    <div class="subject-card" data-chapter="{{ chapter_data.chapter.slug }}">
                         <div class="subject-header">
                             <div class="subject-icon chemistry">🧪</div>
                             <div class="subject-info">
-                                <h3>Organic Chemistry</h3>
-                                <p>Hydrocarbons, Functional Groups, Reactions</p>
+                                <h3>{{ chapter_data.chapter.title }}</h3>
+                                <p>{% if chapter_data.chapter.description %}{{ chapter_data.chapter.description }}{% else %}Chapter {{ chapter_data.chapter.chapter_no }}{% endif %}</p>
                             </div>
                         </div>
                         <div class="subject-stats">
                             <div class="subject-stat">
-                                <div class="number">20</div>
+                                <div class="number">{{ chapter_data.stats.total }}</div>
                                 <div class="label">Questions</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">18</div>
+                                <div class="number">{{ chapter_data.stats.completed }}</div>
                                 <div class="label">Completed</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">90%</div>
+                                <div class="number">{{ chapter_data.stats.score|floatformat:0 }}%</div>
                                 <div class="label">Score</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="inorganic-chemistry">
+                    {% empty %}
+                    <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-icon chemistry">🧪</div>
                             <div class="subject-info">
-                                <h3>Inorganic Chemistry</h3>
-                                <p>Elements, Compounds, Periodic Table</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">12</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">10</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">85%</div>
-                                <div class="label">Score</div>
+                                <h3>No Chapters Available</h3>
+                                <p>Add chapters for Chemistry in the admin panel</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="physical-chemistry">
-                        <div class="subject-header">
-                            <div class="subject-icon chemistry">🧪</div>
-                            <div class="subject-info">
-                                <h3>Physical Chemistry</h3>
-                                <p>Thermodynamics, Kinetics, Equilibrium</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">6</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">4</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">78%</div>
-                                <div class="label">Score</div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- Physics Tab Content -->
+            {% if subjects_data.Physics %}
             <div class="tab-content" data-content="Physics">
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-icon total">📊</div>
                         <div class="stat-info">
-                            <h3 id="physics-total">42</h3>
+                            <h3 id="physics-total">{{ subjects_data.Physics.stats.total }}</h3>
                             <p>Total Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon pending">⏳</div>
                         <div class="stat-info">
-                            <h3 id="physics-pending">8</h3>
+                            <h3 id="physics-pending">{{ subjects_data.Physics.stats.pending }}</h3>
                             <p>Pending Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon completed">✅</div>
                         <div class="stat-info">
-                            <h3 id="physics-completed">34</h3>
+                            <h3 id="physics-completed">{{ subjects_data.Physics.stats.completed }}</h3>
                             <p>Completed</p>
                         </div>
                     </div>
@@ -689,101 +622,67 @@
                 </div>
 
                 <div class="subjects-grid" id="physics-chapters">
-                    <div class="subject-card" data-chapter="mechanics">
+                    {% for chapter_data in subjects_data.Physics.chapters %}
+                    <div class="subject-card" data-chapter="{{ chapter_data.chapter.slug }}">
                         <div class="subject-header">
                             <div class="subject-icon physics">⚛</div>
                             <div class="subject-info">
-                                <h3>Mechanics</h3>
-                                <p>Motion, Forces, Energy, Momentum</p>
+                                <h3>{{ chapter_data.chapter.title }}</h3>
+                                <p>{% if chapter_data.chapter.description %}{{ chapter_data.chapter.description }}{% else %}Chapter {{ chapter_data.chapter.chapter_no }}{% endif %}</p>
                             </div>
                         </div>
                         <div class="subject-stats">
                             <div class="subject-stat">
-                                <div class="number">18</div>
+                                <div class="number">{{ chapter_data.stats.total }}</div>
                                 <div class="label">Questions</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">15</div>
+                                <div class="number">{{ chapter_data.stats.completed }}</div>
                                 <div class="label">Completed</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">82%</div>
+                                <div class="number">{{ chapter_data.stats.score|floatformat:0 }}%</div>
                                 <div class="label">Score</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="thermodynamics">
+                    {% empty %}
+                    <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-icon physics">⚛</div>
                             <div class="subject-info">
-                                <h3>Thermodynamics</h3>
-                                <p>Heat, Temperature, Entropy</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">12</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">10</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">80%</div>
-                                <div class="label">Score</div>
+                                <h3>No Chapters Available</h3>
+                                <p>Add chapters for Physics in the admin panel</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="optics">
-                        <div class="subject-header">
-                            <div class="subject-icon physics">⚛</div>
-                            <div class="subject-info">
-                                <h3>Optics</h3>
-                                <p>Light, Reflection, Refraction, Lenses</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">12</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">9</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">75%</div>
-                                <div class="label">Score</div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- English Tab Content -->
+            {% if subjects_data.English %}
             <div class="tab-content" data-content="English">
                 <div class="stats">
                     <div class="stat-card">
                         <div class="stat-icon total">📊</div>
                         <div class="stat-info">
-                            <h3 id="english-total">28</h3>
+                            <h3 id="english-total">{{ subjects_data.English.stats.total }}</h3>
                             <p>Total Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon pending">⏳</div>
                         <div class="stat-info">
-                            <h3 id="english-pending">5</h3>
+                            <h3 id="english-pending">{{ subjects_data.English.stats.pending }}</h3>
                             <p>Pending Questions</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon completed">✅</div>
                         <div class="stat-info">
-                            <h3 id="english-completed">23</h3>
+                            <h3 id="english-completed">{{ subjects_data.English.stats.completed }}</h3>
                             <p>Completed</p>
                         </div>
                     </div>
@@ -794,79 +693,44 @@
                 </div>
 
                 <div class="subjects-grid" id="english-chapters">
-                    <div class="subject-card" data-chapter="grammar">
+                    {% for chapter_data in subjects_data.English.chapters %}
+                    <div class="subject-card" data-chapter="{{ chapter_data.chapter.slug }}">
                         <div class="subject-header">
                             <div class="subject-icon english">📝</div>
                             <div class="subject-info">
-                                <h3>Grammar</h3>
-                                <p>Tenses, Parts of Speech, Syntax</p>
+                                <h3>{{ chapter_data.chapter.title }}</h3>
+                                <p>{% if chapter_data.chapter.description %}{{ chapter_data.chapter.description }}{% else %}Chapter {{ chapter_data.chapter.chapter_no }}{% endif %}</p>
                             </div>
                         </div>
                         <div class="subject-stats">
                             <div class="subject-stat">
-                                <div class="number">12</div>
+                                <div class="number">{{ chapter_data.stats.total }}</div>
                                 <div class="label">Questions</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">10</div>
+                                <div class="number">{{ chapter_data.stats.completed }}</div>
                                 <div class="label">Completed</div>
                             </div>
                             <div class="subject-stat">
-                                <div class="number">88%</div>
+                                <div class="number">{{ chapter_data.stats.score|floatformat:0 }}%</div>
                                 <div class="label">Score</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="vocabulary">
+                    {% empty %}
+                    <div class="subject-card">
                         <div class="subject-header">
                             <div class="subject-icon english">📝</div>
                             <div class="subject-info">
-                                <h3>Vocabulary</h3>
-                                <p>Word Meanings, Synonyms, Antonyms</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">10</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">8</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">85%</div>
-                                <div class="label">Score</div>
+                                <h3>No Chapters Available</h3>
+                                <p>Add chapters for English in the admin panel</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="subject-card" data-chapter="comprehension">
-                        <div class="subject-header">
-                            <div class="subject-icon english">📝</div>
-                            <div class="subject-info">
-                                <h3>Comprehension</h3>
-                                <p>Reading, Analysis, Interpretation</p>
-                            </div>
-                        </div>
-                        <div class="subject-stats">
-                            <div class="subject-stat">
-                                <div class="number">6</div>
-                                <div class="label">Questions</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">5</div>
-                                <div class="label">Completed</div>
-                            </div>
-                            <div class="subject-stat">
-                                <div class="number">82%</div>
-                                <div class="label">Score</div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
  
     <script>
