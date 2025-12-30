@@ -155,10 +155,7 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
-function signInWithGoogle() {
-  // Redirect to Google OAuth
-  window.location.href = "/accounts/google/login/";
-}
+
 // // static/js/main.js
 
 // Smooth scrolling for anchor links

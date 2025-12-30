@@ -23,6 +23,7 @@ admin.site.index_title = "Welcome to BackHouse"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),  # Django Allauth URLs
     path('' , include("home.urls")),
     path('contact' , include("home.urls"))
 

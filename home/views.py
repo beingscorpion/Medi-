@@ -12,7 +12,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Q
-import json
 from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats , Contact
 
 
@@ -91,7 +90,7 @@ def contact(request):
 #         return redirect('/dashboard/')
 #     return redirect('/')
 
-# @login_required
+@login_required
 def dashboard_view(request):
     # chapters = Chapter.objects.filter(subject__name=subject_name)
     # total_questions = Question.objects.filter(chapter__subject__name=subject_name).count()
@@ -183,48 +182,19 @@ def dashboard_view(request):
     return render(request, 'dashboard/dashboard.html', context)
 
 
-def paper_selection_view(request, slug=None):
+def paper_selection_view(request, slug):
     """
     Paper type selection page - shows options for Past Papers, Subject Paper, Theory Paper
     """
-    # Map chapter slugs to display names
-    chapter_names = {
-        'cell-biology': 'Cell Biology',
-        'genetics': 'Genetics',
-        'ecology': 'Ecology',
-        'organic-chemistry': 'Organic Chemistry',
-        'inorganic-chemistry': 'Inorganic Chemistry',
-        'physical-chemistry': 'Physical Chemistry',
-        'mechanics': 'Mechanics',
-        'thermodynamics': 'Thermodynamics',
-        'optics': 'Optics',
-        'grammar': 'Grammar',
-        'vocabulary': 'Vocabulary',
-        'comprehension': 'Comprehension',
-    }
-    
-    chapter_descriptions = {
-        'cell-biology': 'Cell Structure, Organelles, Functions',
-        'genetics': 'DNA, RNA, Inheritance Patterns',
-        'ecology': 'Ecosystems, Food Chains, Biomes',
-        'organic-chemistry': 'Hydrocarbons, Functional Groups, Reactions',
-        'inorganic-chemistry': 'Elements, Compounds, Periodic Table',
-        'physical-chemistry': 'Thermodynamics, Kinetics, Equilibrium',
-        'mechanics': 'Motion, Forces, Energy, Momentum',
-        'thermodynamics': 'Heat, Temperature, Entropy',
-        'optics': 'Light, Reflection, Refraction, Lenses',
-        'grammar': 'Tenses, Parts of Speech, Syntax',
-        'vocabulary': 'Word Meanings, Synonyms, Antonyms',
-        'comprehension': 'Reading, Analysis, Interpretation',
-    }
-    
+    chapter = Chapter.objects.get(slug=slug)
     context = {
-        'chapter_slug': slug or 'chapter',
-        'chapter_name': chapter_names.get(slug, 'Chapter'),
-        'chapter_description': chapter_descriptions.get(slug, 'Select a paper type to start practicing'),
+        'chapter_name': chapter.title,
+        'chapter_description': chapter.description,
     }
-    
+
     return render(request, 'paper_selection.html', context)
+
+
 
 
 def mcq_view(request, slug, paper_type):
@@ -237,9 +207,104 @@ def mcq_view(request, slug, paper_type):
     }
     return render(request, 'mcq.html', context)
 
-# def logout_view(request):
-#     django_logout(request)
-#     return redirect('/')
+# @csrf_exempt
+# @require_http_methods(["POST"])
+# def google_auth_view(request):
+#     """
+#     Handle Google Sign-In authentication
+#     """
+#     try:
+#         data = json.loads(request.body)
+#         credential = data.get('credential')
+        
+#         if not credential:
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': 'No credential provided'
+#             }, status=400)
+        
+#         # Decode the JWT token
+#         # For production, you should verify the token with Google's servers
+#         try:
+#             if JWT_AVAILABLE:
+#                 # Use PyJWT if available
+#                 decoded_token = jwt.decode(credential, options={"verify_signature": False})
+#             else:
+#                 # Manual JWT decoding (base64 decode the payload)
+#                 parts = credential.split('.')
+#                 if len(parts) != 3:
+#                     raise ValueError("Invalid JWT format")
+                
+#                 # Decode the payload (second part)
+#                 payload = parts[1]
+#                 # Add padding if needed
+#                 padding = 4 - len(payload) % 4
+#                 if padding != 4:
+#                     payload += '=' * padding
+                
+#                 # Decode base64
+#                 decoded_bytes = base64.urlsafe_b64decode(payload)
+#                 decoded_token = json.loads(decoded_bytes.decode('utf-8'))
+            
+#             email = decoded_token.get('email')
+#             name = decoded_token.get('name', '')
+#             given_name = decoded_token.get('given_name', '')
+#             family_name = decoded_token.get('family_name', '')
+#             google_id = decoded_token.get('sub')
+#             picture = decoded_token.get('picture', '')
+            
+#             if not email:
+#                 return JsonResponse({
+#                     'success': False,
+#                     'error': 'Email not found in token'
+#                 }, status=400)
+            
+#             # Get or create user
+#             user, created = User.objects.get_or_create(
+#                 username=email,
+#                 defaults={
+#                     'email': email,
+#                     'first_name': given_name,
+#                     'last_name': family_name,
+#                 }
+#             )
+            
+#             # Update user info if it changed
+#             if not created:
+#                 user.email = email
+#                 user.first_name = given_name
+#                 user.last_name = family_name
+#                 user.save()
+            
+#             # Log the user in
+#             login(request, user)
+            
+#             return JsonResponse({
+#                 'success': True,
+#                 'redirect_url': '/dashboard/',
+#                 'message': 'Successfully authenticated'
+#             })
+            
+#         except (ValueError, json.JSONDecodeError, KeyError) as e:
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': f'Invalid token: {str(e)}'
+#             }, status=400)
+            
+#     except json.JSONDecodeError:
+#         return JsonResponse({
+#             'success': False,
+#             'error': 'Invalid JSON'
+#         }, status=400)
+#     except Exception as e:
+#         return JsonResponse({
+#             'success': False,
+#             'error': str(e)
+#         }, status=500)
+
+def logout_view(request):
+    django_logout(request)
+    return redirect('/')
 
 
 

@@ -31,10 +31,11 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('chapter/<slug:slug>/', views.paper_selection_view, name='paper_selection'),
     path('mcq/<slug:slug>/<str:paper_type>/', views.mcq_view, name='mcq'),
-    # path('logout', views.logout_view, name='logout'),
+    
+    path('logout', views.logout_view, name='logout'),
     # path('login/', views.login.as_view(), name='login'),
     # path('login/', views.login_view, name='login')
-    
+    path('accounts/', include('allauth.urls')),
     # Dashboard (requires authentication)
     # path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
 ]
