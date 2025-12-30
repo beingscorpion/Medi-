@@ -1,0 +1,932 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Dashboard</title>
+    {% load static %}
+    <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+     <style>
+         * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+         }
+ 
+         body {
+             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+             background: #f8fafc;
+             color: #1e293b;
+         }
+ 
+         .header {
+             background: white;
+             border-bottom: 1px solid #e2e8f0;
+             padding: 0 2rem;
+             height: 64px;
+             display: flex;
+             align-items: center;
+             justify-content: space-between;
+         }
+ 
+         .logo {
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+             font-weight: 700;
+             font-size: 1.25rem;
+         }
+ 
+         .logo-icon {
+             width: 32px;
+             height: 32px;
+             background: linear-gradient(135deg, #8b5cf6, #a855f7);
+             border-radius: 6px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: white;
+             font-weight: bold;
+         }
+ 
+         .nav {
+             display: flex;
+             gap: 2rem;
+             align-items: center;
+         }
+ 
+         .nav a {
+             text-decoration: none;
+             color: #64748b;
+             font-weight: 500;
+             transition: color 0.2s;
+         }
+ 
+         .nav a:hover, .nav a.active {
+             color: #8b5cf6;
+         }
+ 
+         .search-bar {
+             display: flex;
+             align-items: center;
+             background: #f1f5f9;
+             border-radius: 8px;
+             padding: 0.5rem 1rem;
+             min-width: 300px;
+         }
+ 
+         .search-bar input {
+             background: none;
+             border: none;
+             outline: none;
+             flex: 1;
+             margin-left: 0.5rem;
+         }
+ 
+         .profile {
+             width: 40px;
+             height: 40px;
+             background: linear-gradient(135deg, #8b5cf6, #a855f7);
+             border-radius: 50%;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: white;
+             font-weight: 600;
+         }
+ 
+         .main {
+             display: flex;
+             height: calc(100vh - 64px);
+         }
+ 
+         .sidebar {
+             width: 280px;
+             background: white;
+             border-right: 1px solid #e2e8f0;
+             padding: 2rem 1rem;
+         }
+ 
+         .my-subjects {
+             background: linear-gradient(135deg, #8b5cf6, #a855f7);
+             color: white;
+             border-radius: 12px;
+             padding: 1rem;
+             margin-bottom: 2rem;
+             display: flex;
+             align-items: center;
+             gap: 0.75rem;
+         }
+ 
+         .my-subjects-icon {
+             width: 24px;
+             height: 24px;
+             background: rgba(255,255,255,0.2);
+             border-radius: 6px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+         }
+ 
+         .sidebar-menu {
+             list-style: none;
+         }
+ 
+         .sidebar-menu li {
+             margin-bottom: 0.5rem;
+         }
+ 
+         .sidebar-menu a {
+             display: flex;
+             align-items: center;
+             gap: 0.75rem;
+             padding: 0.75rem;
+             text-decoration: none;
+             color: #64748b;
+             border-radius: 8px;
+             transition: all 0.2s;
+         }
+ 
+         .sidebar-menu a:hover {
+             background: #f1f5f9;
+             color: #1e293b;
+         }
+ 
+         .sidebar-menu .icon {
+             width: 20px;
+             height: 20px;
+             border-radius: 4px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 12px;
+         }
+ 
+         .icon.math { background: #fef3c7; color: #d97706; }
+         .icon.physics { background: #dbeafe; color: #2563eb; }
+         .icon.chemistry { background: #dcfce7; color: #16a34a; }
+         .icon.biology { background: #fce7f3; color: #db2777; }
+         .icon.english { background: #f3e8ff; color: #9333ea; }
+ 
+         .content {
+             flex: 1;
+             padding: 2rem;
+             overflow-y: auto;
+         }
+ 
+         .content-header {
+             display: flex;
+             justify-content: between;
+             align-items: center;
+             margin-bottom: 2rem;
+         }
+ 
+         .content-title {
+             font-size: 1.5rem;
+             font-weight: 700;
+             color: #1e293b;
+         }
+ 
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            padding: 0.875rem 1.75rem;
+            color: #64748b;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.9375rem;
+            position: relative;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+
+        .tab:hover {
+            color: #8b5cf6;
+            background: #f3e8ff;
+            transform: translateY(-1px);
+        }
+
+        .tab.active {
+            color: white;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab.active:hover {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+ 
+         .stats {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+             gap: 1.5rem;
+             margin-bottom: 2rem;
+         }
+ 
+         .stat-card {
+             background: white;
+             border-radius: 12px;
+             padding: 1.5rem;
+             border: 1px solid #e2e8f0;
+             display: flex;
+             align-items: center;
+             gap: 1rem;
+         }
+ 
+         .stat-icon {
+             width: 48px;
+             height: 48px;
+             border-radius: 12px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 20px;
+             color: white;
+         }
+ 
+         .stat-icon.total { background: #fbbf24; }
+         .stat-icon.pending { background: #60a5fa; }
+         .stat-icon.completed { background: #34d399; }
+ 
+         .stat-info h3 {
+             font-size: 1.5rem;
+             font-weight: 700;
+             color: #1e293b;
+         }
+ 
+         .stat-info p {
+             color: #64748b;
+             font-size: 0.875rem;
+         }
+ 
+         .subjects-grid {
+             display: grid;
+             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+             gap: 1.5rem;
+         }
+ 
+         .subject-card {
+             background: white;
+             border-radius: 12px;
+             border: 1px solid #e2e8f0;
+             overflow: hidden;
+             transition: all 0.2s;
+             cursor: pointer;
+         }
+ 
+         .subject-card:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 8px 25px -8px rgba(0,0,0,0.15);
+         }
+ 
+         .subject-header {
+             padding: 1.5rem;
+             display: flex;
+             align-items: center;
+             gap: 1rem;
+             border-bottom: 1px solid #f1f5f9;
+         }
+ 
+         .subject-icon {
+             width: 48px;
+             height: 48px;
+             border-radius: 12px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 20px;
+             color: white;
+         }
+ 
+         .subject-icon.math { background: linear-gradient(135deg, #f59e0b, #d97706); }
+         .subject-icon.physics { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+         .subject-icon.chemistry { background: linear-gradient(135deg, #10b981, #16a34a); }
+         .subject-icon.biology { background: linear-gradient(135deg, #ec4899, #db2777); }
+         .subject-icon.english { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+         .subject-icon.cs { background: linear-gradient(135deg, #ef4444, #dc2626); }
+ 
+         .subject-info h3 {
+             font-weight: 600;
+             color: #1e293b;
+             margin-bottom: 0.25rem;
+         }
+ 
+         .subject-info p {
+             color: #64748b;
+             font-size: 0.875rem;
+         }
+ 
+         .subject-stats {
+             padding: 1rem 1.5rem;
+             display: flex;
+             justify-content: space-between;
+             background: #f8fafc;
+         }
+ 
+         .subject-stat {
+             text-align: center;
+         }
+ 
+         .subject-stat .number {
+             font-weight: 700;
+             font-size: 1.125rem;
+             color: #1e293b;
+         }
+ 
+         .subject-stat .label {
+             font-size: 0.75rem;
+             color: #64748b;
+             margin-top: 0.25rem;
+         }
+ 
+         .add-btn {
+             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+             color: white;
+             border: none;
+             border-radius: 8px;
+             padding: 0.75rem 1.5rem;
+             font-weight: 500;
+             cursor: pointer;
+             transition: all 0.2s;
+             margin-left: auto;
+         }
+ 
+         .add-btn:hover {
+             transform: translateY(-1px);
+             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+         }
+ 
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .subject-card.selected {
+            border: 2px solid #8b5cf6;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+     </style>
+ </head>
+ <body>
+     <header class="header">
+         <div class="logo">
+             <div class="logo-icon">Q</div>
+             <span>MedSol</span>
+         </div>
+
+         
+         <div><button class="add-btn">logout</button></div>
+     </header>
+ 
+     <main class="main">
+         <aside class="sidebar">
+             <div class="my-subjects">
+                 <div class="my-subjects-icon">MedSol</div>
+                 <div>
+                     <div style="font-weight: 600;">My Subjects</div>
+                     <div style="opacity: 0.8; font-size: 0.875rem;">6 active</div>
+                 </div>
+             </div>
+ 
+             <ul class="sidebar-menu">
+                 <li><a href="#"><span class="icon math"></span>MDcat</a></li>
+                 <li><a href="#"><span class="icon physics"></span>Mock Test</a></li>
+                 {% comment %} <li><a href="#"><span class="icon chemistry">🧪</span>Chemistry</a></li>
+                 <li><a href="#"><span class="icon biology">🧬</span>Biology</a></li>
+                 <li><a href="#"><span class="icon english">📝</span>English</a></li>
+                 <li><a href="#"><span class="icon" style="background: #fef2f2; color: #dc2626;">💻</span>Computer Science</a></li> {% endcomment %}
+             </ul>
+         </aside>
+ 
+         <div class="content">
+             
+ 
+            <div class="tabs">
+                <a href="#" class="tab active" data-tab="Biology">Biology</a>
+                <a href="#" class="tab" data-tab="Chemistry">Chemistry</a>
+                <a href="#" class="tab" data-tab="Physics">Physics</a>
+                <a href="#" class="tab" data-tab="English">English</a>
+                {% comment %} <a href="#" class="tab" data-tab="settings">Settings</a> {% endcomment %}
+            </div>
+
+            <!-- Biology Tab Content -->
+            <div class="tab-content active" data-content="Biology">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon total">📊</div>
+                        <div class="stat-info">
+                            <h3 id="biology-total">45</h3>
+                            <p>Total Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="biology-pending">7</h3>
+                            <p>Pending Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">✅</div>
+                        <div class="stat-info">
+                            <h3 id="biology-completed">38</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2>Biology Chapters</h2>
+                </div>
+
+                <div class="subjects-grid" id="biology-chapters">
+                    <div class="subject-card" data-chapter="cell-biology">
+                        <div class="subject-header">
+                            <div class="subject-icon biology">🧬</div>
+                            <div class="subject-info">
+                                <h3>Cell Biology</h3>
+                                <p>Cell Structure, Organelles, Functions</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">15</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">12</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">85%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="genetics">
+                        <div class="subject-header">
+                            <div class="subject-icon biology">🧬</div>
+                            <div class="subject-info">
+                                <h3>Genetics</h3>
+                                <p>DNA, RNA, Inheritance Patterns</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">18</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">15</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">92%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="ecology">
+                        <div class="subject-header">
+                            <div class="subject-icon biology">🧬</div>
+                            <div class="subject-info">
+                                <h3>Ecology</h3>
+                                <p>Ecosystems, Food Chains, Biomes</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">12</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">11</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">88%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chemistry Tab Content -->
+            <div class="tab-content" data-content="Chemistry">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon total">📊</div>
+                        <div class="stat-info">
+                            <h3 id="chemistry-total">38</h3>
+                            <p>Total Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="chemistry-pending">6</h3>
+                            <p>Pending Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">✅</div>
+                        <div class="stat-info">
+                            <h3 id="chemistry-completed">32</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2>Chemistry Chapters</h2>
+                </div>
+
+                <div class="subjects-grid" id="chemistry-chapters">
+                    <div class="subject-card" data-chapter="organic-chemistry">
+                        <div class="subject-header">
+                            <div class="subject-icon chemistry">🧪</div>
+                            <div class="subject-info">
+                                <h3>Organic Chemistry</h3>
+                                <p>Hydrocarbons, Functional Groups, Reactions</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">20</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">18</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">90%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="inorganic-chemistry">
+                        <div class="subject-header">
+                            <div class="subject-icon chemistry">🧪</div>
+                            <div class="subject-info">
+                                <h3>Inorganic Chemistry</h3>
+                                <p>Elements, Compounds, Periodic Table</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">12</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">10</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">85%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="physical-chemistry">
+                        <div class="subject-header">
+                            <div class="subject-icon chemistry">🧪</div>
+                            <div class="subject-info">
+                                <h3>Physical Chemistry</h3>
+                                <p>Thermodynamics, Kinetics, Equilibrium</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">6</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">4</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">78%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physics Tab Content -->
+            <div class="tab-content" data-content="Physics">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon total">📊</div>
+                        <div class="stat-info">
+                            <h3 id="physics-total">42</h3>
+                            <p>Total Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="physics-pending">8</h3>
+                            <p>Pending Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">✅</div>
+                        <div class="stat-info">
+                            <h3 id="physics-completed">34</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2>Physics Chapters</h2>
+                </div>
+
+                <div class="subjects-grid" id="physics-chapters">
+                    <div class="subject-card" data-chapter="mechanics">
+                        <div class="subject-header">
+                            <div class="subject-icon physics">⚛</div>
+                            <div class="subject-info">
+                                <h3>Mechanics</h3>
+                                <p>Motion, Forces, Energy, Momentum</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">18</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">15</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">82%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="thermodynamics">
+                        <div class="subject-header">
+                            <div class="subject-icon physics">⚛</div>
+                            <div class="subject-info">
+                                <h3>Thermodynamics</h3>
+                                <p>Heat, Temperature, Entropy</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">12</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">10</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">80%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="optics">
+                        <div class="subject-header">
+                            <div class="subject-icon physics">⚛</div>
+                            <div class="subject-info">
+                                <h3>Optics</h3>
+                                <p>Light, Reflection, Refraction, Lenses</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">12</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">9</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">75%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- English Tab Content -->
+            <div class="tab-content" data-content="English">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon total">📊</div>
+                        <div class="stat-info">
+                            <h3 id="english-total">28</h3>
+                            <p>Total Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="english-pending">5</h3>
+                            <p>Pending Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">✅</div>
+                        <div class="stat-info">
+                            <h3 id="english-completed">23</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2>English Chapters</h2>
+                </div>
+
+                <div class="subjects-grid" id="english-chapters">
+                    <div class="subject-card" data-chapter="grammar">
+                        <div class="subject-header">
+                            <div class="subject-icon english">📝</div>
+                            <div class="subject-info">
+                                <h3>Grammar</h3>
+                                <p>Tenses, Parts of Speech, Syntax</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">12</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">10</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">88%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="vocabulary">
+                        <div class="subject-header">
+                            <div class="subject-icon english">📝</div>
+                            <div class="subject-info">
+                                <h3>Vocabulary</h3>
+                                <p>Word Meanings, Synonyms, Antonyms</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">10</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">8</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">85%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-card" data-chapter="comprehension">
+                        <div class="subject-header">
+                            <div class="subject-icon english">📝</div>
+                            <div class="subject-info">
+                                <h3>Comprehension</h3>
+                                <p>Reading, Analysis, Interpretation</p>
+                            </div>
+                        </div>
+                        <div class="subject-stats">
+                            <div class="subject-stat">
+                                <div class="number">6</div>
+                                <div class="label">Questions</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">5</div>
+                                <div class="label">Completed</div>
+                            </div>
+                            <div class="subject-stat">
+                                <div class="number">82%</div>
+                                <div class="label">Score</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+ 
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Show selected tab content
+                const tabName = this.getAttribute('data-tab');
+                const content = document.querySelector(`[data-content="${tabName}"]`);
+                if (content) {
+                    content.classList.add('active');
+                }
+            });
+        });
+
+        // Chapter card click functionality
+        document.querySelectorAll('.subject-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const chapter = this.getAttribute('data-chapter');
+                const chapterName = this.querySelector('h3').textContent;
+                
+                // Remove selected class from all cards in the same tab
+                const currentTab = this.closest('.tab-content');
+                if (currentTab) {
+                    currentTab.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+                }
+                this.classList.add('selected');
+                
+                // Navigate to paper selection page for this chapter
+                if (chapter) {
+                    window.location.href = `/chapter/${chapter}/`;
+                } else {
+                    const subjectSlug = this.getAttribute('data-subject') || 'chapter';
+                    window.location.href = `/chapter/${subjectSlug}/`;
+                }
+            });
+        });
+
+        // Logout button
+        const logoutBtn = document.querySelector('.add-btn');
+        if (logoutBtn && logoutBtn.textContent.trim() === 'logout') {
+            logoutBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    // Add logout functionality here
+                    // window.location.href = '/logout/';
+                    console.log('Logout clicked');
+                }
+            });
+        }
+    </script>
+ </body>
+ </html>

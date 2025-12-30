@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 
 # from phonenumber_field.phonenumber import PhoneNumber
@@ -11,6 +12,7 @@ from django.core.validators import RegexValidator
 # Create your models here.
 
 class Contact (models.Model):
+    # user = models.ForeignKey(User, on_delete=models.SET_NULL , null= True, blank=True)
     name = models.CharField(max_length=15)
     email = models.CharField(max_length=50)
     phone = models.CharField(max_length=11)
@@ -26,6 +28,5 @@ class Contact (models.Model):
 
     # def get_absolute_url(self):
     #     return reverse("_detail", kwargs={"pk": self.pk}
-
 
 

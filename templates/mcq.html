@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #f7f9ff 0%, #fdf6f2 100%);
+            color: #0f172a;
+        }
+        .page {
+            max-width: 440px;
+            margin: 0 auto;
+            padding: 16px 16px 48px;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .progress {
+            font-weight: 700;
+            color: #f97316;
+        }
+        .progress span {
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        h1 {
+            font-size: 22px;
+            margin: 0 0 4px;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .counter {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+        .card h4 {
+            color: #94a3b8;
+            letter-spacing: 0.02em;
+            font-size: 12px;
+            margin: 0 0 10px;
+            text-transform: uppercase;
+        }
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        .option {
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            color: #0f172a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option:hover { transform: translateY(-1px); }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.9;
+        }
+        .option.correct {
+            background: #dcfce7;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        .option.incorrect {
+            background: #fee2e2;
+            border-color: #fecdd3;
+            color: #b91c1c;
+        }
+        .pill {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .pill.correct { background: #22c55e; color: #fff; }
+        .pill.incorrect { background: #ef4444; color: #fff; }
+        .feedback {
+            background: #fff7ed;
+            border-radius: 16px;
+            padding: 12px 16px 16px;
+            border: 1px solid #fed7aa;
+            display: none;
+            gap: 4px;
+        }
+        .feedback h4 { color: #ea580c; }
+        .feedback .answer {
+            margin: 0 0 8px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .explanation-title {
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            margin: 12px 0 4px;
+        }
+        .explanation {
+            margin: 0;
+            color: #0f172a;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .cta {
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        .cta button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #5b21b6, #7c3aed);
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(91, 33, 182, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            opacity: 0.9;
+        }
+        .cta button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(91, 33, 182, 0.45);
+            opacity: 1;
+        }
+        .cta button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+    </style>
+    <!-- MathJax for rendering mathematical expressions -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" defer></script>
+</head>
+<body>
+    <div class="page">
+        <div class="top-bar">
+            <div class="progress" id="progress-text">1<span>/1</span></div>
+        </div>
+
+        <h1 id="test-title">Practice Test</h1>
+        <div class="subtitle">Answer the below question</div>
+
+        <div class="card">
+            <div class="counter" id="question-counter">Question 1</div>
+            <div class="question-text" id="question-text"></div>
+
+            <h4>Option</h4>
+            <div class="options" id="options-container"></div>
+        </div>
+
+        <div class="feedback" id="feedback">
+            <h4 id="feedback-title">Feedback</h4>
+            <div class="answer" id="feedback-answer"></div>
+            <div class="explanation-title">Explanation</div>
+            <p class="explanation" id="feedback-explanation"></p>
+        </div>
+
+        <div class="cta">
+            <button type="button" id="next-btn" disabled>Next Question →</button>
+        </div>
+    </div>
+
+    <script>
+        const questionData = JSON.parse('{{ questions_json|escapejs }}');
+        const title = '{{ test_title|default:"Practice Test" }}';
+
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedback = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackAnswer = document.getElementById('feedback-answer');
+        const feedbackExplanation = document.getElementById('feedback-explanation');
+        const nextBtn = document.getElementById('next-btn');
+        const progressText = document.getElementById('progress-text');
+        const questionCounter = document.getElementById('question-counter');
+        const testTitle = document.getElementById('test-title');
+
+        let currentIndex = 0;
+        let answered = false;
+
+        testTitle.textContent = title;
+
+        function renderQuestion() {
+            answered = false;
+            const q = questionData[currentIndex];
+            questionTextEl.innerHTML = q.question;
+            questionCounter.textContent = `Question ${currentIndex + 1}`;
+            progressText.innerHTML = `${currentIndex + 1}<span>/${questionData.length}</span>`;
+            feedback.style.display = 'none';
+            nextBtn.disabled = true;
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.dataset.key = opt.key;
+                div.innerHTML = `<span>${opt.label}</span>`;
+                div.addEventListener('click', () => handleSelect(opt.key));
+                optionsContainer.appendChild(div);
+            });
+            typesetMath();
+        }
+
+        function handleSelect(selectedKey) {
+            if (answered) return;
+            answered = true;
+            const q = questionData[currentIndex];
+            const correctKey = q.correct;
+
+            optionsContainer.querySelectorAll('.option').forEach(opt => {
+                const key = opt.dataset.key;
+                opt.classList.add('disabled');
+                if (key === correctKey) {
+                    opt.classList.add('correct');
+                    const pill = document.createElement('span');
+                    pill.className = 'pill correct';
+                    pill.textContent = '✓';
+                    opt.appendChild(pill);
+                }
+                if (key === selectedKey && key !== correctKey) {
+                    opt.classList.add('incorrect');
+                    const pill = document.createElement('span');
+                    pill.className = 'pill incorrect';
+                    pill.textContent = '✕';
+                    opt.appendChild(pill);
+                }
+            });
+
+            if (selectedKey === correctKey) {
+                feedbackTitle.textContent = 'Correct!';
+                feedbackAnswer.innerHTML = `You selected the right answer: ${q.options.find(o => o.key === correctKey).label}`;
+            } else {
+                feedbackTitle.textContent = 'Wrong answer!';
+                const correctLabel = q.options.find(o => o.key === correctKey).label;
+                feedbackAnswer.innerHTML = `Correct Answer: ${correctLabel}`;
+            }
+            feedbackExplanation.innerHTML = q.explanation || 'Explanation not available.';
+            feedback.style.display = 'block';
+            nextBtn.disabled = false;
+            nextBtn.textContent = (currentIndex === questionData.length - 1) ? 'Finish' : 'Next Question →';
+            typesetMath();
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < questionData.length - 1) {
+                currentIndex += 1;
+                renderQuestion();
+            } else {
+                // Restart or redirect as needed
+                currentIndex = 0;
+                renderQuestion();
+            }
+        });
+
+        function typesetMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
+

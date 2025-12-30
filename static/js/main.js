@@ -32,18 +32,19 @@ function showSignupForm() {
             <div class="divider">
                 <span>or continue with email</span>
             </div>
-            <form class="login-form" method="post" action="/accounts/signup/">
+            <form class="login-form" method="post" action="/register">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${window.getCSRFToken ? window.getCSRFToken() : ''}">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-input" placeholder="Enter a username" required>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <input type="email" name="email" class="form-input" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password1" class="form-input" placeholder="Create a password" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Confirm Password</label>
-                    <input type="password" name="password2" class="form-input" placeholder="Confirm your password" required>
+                    <input type="password" name="password" class="form-input" placeholder="Create a password" required>
                 </div>
                 <button type="submit" class="login-btn">Sign Up</button>
             </form>
@@ -87,7 +88,8 @@ function showLoginForm() {
       <div class="divider">
         <span>or continue with email</span>
       </div>
-      <form class="login-form" method="post" action="/login/">
+      <form class="login-form" method="post" action="/login">
+        <input type="hidden" name="csrfmiddlewaretoken" value="${window.getCSRFToken ? window.getCSRFToken() : ''}">
         <div class="form-group">
           <label class="form-label">Email</label>
           <input type="email" name="email" class="form-input" placeholder="Enter your email" required>

@@ -38,7 +38,11 @@
                                         <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" name="email" id="email" placeholder="Email">
                                     </div>
                                     <div>
-                                        <input type="tel" inputmode="numeric" minlength="10" maxlength="11" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" name="phone" id="phone" placeholder="Phone number (10-11 digits)">
+                                        <input type="text" name="phone" id="phone" minlength="10" maxlength="11"
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        placeholder="Phone number (10-11 digits)"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                        pattern="[0-9]{10,11}" required>
                                     </div>
                                     <div>
                                         <textarea name="message" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" id="message" rows="6" placeholder="Message"></textarea>

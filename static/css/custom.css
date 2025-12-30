@@ -48,6 +48,7 @@
   border-radius: 16px;
   width: 420px;
   max-width: 90vw;
+  max-height: 90vh;
   padding: 0;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -97,6 +98,8 @@
 }
 .login-body {
   padding: 32px;
+  max-height: calc(90vh - 140px);
+  overflow-y: auto;
 }
 .google-btn {
   width: 100%;
