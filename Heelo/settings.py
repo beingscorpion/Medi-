@@ -162,16 +162,5 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         # For each OAuth based provider, either add a ``SocialApp``
-#         # (``socialaccount`` app) containing the required client
-#         # credentials, or list them here:
-#         'APP': {
-#             'client_id': '686839679171-0erjt9aum5mgd1j67u2g89jskg1vdfnh.apps.googleusercontent.com',
-#             'secret': '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',
-#         }
-#     }
-# }
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
