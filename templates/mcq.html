@@ -12,6 +12,23 @@
             background: linear-gradient(180deg, #f7f9ff 0%, #fdf6f2 100%);
             color: #0f172a;
         }
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 16px;
+            margin: -16px -16px 16px -16px;
+            display: flex;
+            align-items: center;
+        }
+        .logo-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        .logo-img {
+            height: 32px;
+            width: auto;
+        }
         .page {
             max-width: 440px;
             margin: 0 auto;
@@ -35,10 +52,27 @@
             font-size: 22px;
             margin: 0 0 4px;
         }
+        .subtitle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
         .subtitle {
             color: #94a3b8;
             font-size: 14px;
-            margin-bottom: 16px;
+            margin: 0;
+        }
+        .report-icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+        .report-icon:hover {
+            color: #ef4444;
         }
         .card {
             background: #fff;
@@ -136,10 +170,40 @@
             line-height: 1.6;
             font-size: 14px;
         }
+        .navigation-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .nav-arrow {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .nav-arrow:hover:not(:disabled) {
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+            background: #f5f3ff;
+        }
+        .nav-arrow:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
         .cta {
+            flex: 1;
             display: flex;
             justify-content: center;
-            margin-top: 16px;
         }
         .cta button {
             width: 100%;
@@ -155,7 +219,7 @@
             transition: transform 0.15s ease, box-shadow 0.15s ease;
             opacity: 0.9;
         }
-        .cta button:hover {
+        .cta button:hover:not(:disabled) {
             transform: translateY(-1px);
             box-shadow: 0 12px 28px rgba(91, 33, 182, 0.45);
             opacity: 1;
@@ -177,12 +241,31 @@
 </head>
 <body>
     <div class="page">
+        <div class="header">
+            <a href="/dashboard/" class="logo-link">
+                {% load static %}
+                <img class="logo-img" src="{% static 'images/logo.svg' %}" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display: none; align-items: center; gap: 8px; font-weight: 700; font-size: 1.25rem; color: #8b5cf6;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6, #a855f7); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">M</div>
+                    <span>MedSol</span>
+                </div>
+            </a>
+        </div>
+        
         <div class="top-bar">
             <div class="progress" id="progress-text">1<span>/1</span></div>
         </div>
 
         <h1 id="test-title">Practice Test</h1>
-        <div class="subtitle">Answer the below question</div>
+        <div class="subtitle-container">
+            <div class="subtitle">Answer the below question</div>
+            {% if user.is_authenticated %}
+            <svg class="report-icon" id="report-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                <line x1="4" y1="22" x2="4" y2="15"></line>
+            </svg>
+            {% endif %}
+        </div>
 
         <div class="card">
             <div class="counter" id="question-counter">Question 1</div>
@@ -199,8 +282,11 @@
             <p class="explanation" id="feedback-explanation"></p>
         </div>
 
-        <div class="cta">
-            <button type="button" id="next-btn" disabled>Next Question →</button>
+        <div class="navigation-container">
+            <button class="nav-arrow" id="prev-btn" disabled>←</button>
+            <div class="cta">
+                <button type="button" id="next-btn" disabled>Next Question →</button>
+            </div>
         </div>
     </div>
 
@@ -215,41 +301,125 @@
         const feedbackAnswer = document.getElementById('feedback-answer');
         const feedbackExplanation = document.getElementById('feedback-explanation');
         const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const reportIcon = document.getElementById('report-icon');
         const progressText = document.getElementById('progress-text');
         const questionCounter = document.getElementById('question-counter');
         const testTitle = document.getElementById('test-title');
 
         let currentIndex = 0;
         let answered = false;
+        let userAttempts = {}; // Store user attempts
+
+        // Initialize userAttempts from questionData
+        questionData.forEach(q => {
+            if (q.selected) {
+                userAttempts[q.id] = {
+                    selected_text: q.selected,
+                    is_correct: q.is_correct
+                };
+            }
+        });
 
         testTitle.textContent = title;
 
+        function updateNavigationState() {
+            prevBtn.disabled = currentIndex === 0;
+            // Next/Finish button is only enabled after answering
+            if (!answered) {
+                nextBtn.disabled = true;
+            }
+        }
+
         function renderQuestion() {
-            answered = false;
             const q = questionData[currentIndex];
             questionTextEl.innerHTML = q.question;
             questionCounter.textContent = `Question ${currentIndex + 1}`;
             progressText.innerHTML = `${currentIndex + 1}<span>/${questionData.length}</span>`;
-            feedback.style.display = 'none';
-            nextBtn.disabled = true;
             optionsContainer.innerHTML = '';
+
+            // Check if user has a previous attempt for this question
+            const previousAttempt = userAttempts[q.id] || (q.selected ? {
+                selected_text: q.selected,
+                is_correct: q.is_correct
+            } : null);
+
+            if (previousAttempt) {
+                answered = true;
+                feedback.style.display = 'block';
+                nextBtn.disabled = false;
+                nextBtn.textContent = (currentIndex === questionData.length - 1) ? 'Finish' : 'Next Question →';
+            } else {
+                answered = false;
+                feedback.style.display = 'none';
+                nextBtn.disabled = true;
+            }
 
             q.options.forEach((opt) => {
                 const div = document.createElement('div');
                 div.className = 'option';
                 div.dataset.key = opt.key;
                 div.innerHTML = `<span>${opt.label}</span>`;
-                div.addEventListener('click', () => handleSelect(opt.key));
+                
+                // Check if this option was previously selected
+                const wasSelected = previousAttempt && previousAttempt.selected_text === opt.label;
+                const isCorrect = opt.key === q.correct;
+                
+                if (previousAttempt) {
+                    div.classList.add('disabled');
+                    if (isCorrect) {
+                        div.classList.add('correct');
+                        const pill = document.createElement('span');
+                        pill.className = 'pill correct';
+                        pill.textContent = '✓';
+                        div.appendChild(pill);
+                    }
+                    if (wasSelected && !isCorrect) {
+                        div.classList.add('incorrect');
+                        const pill = document.createElement('span');
+                        pill.className = 'pill incorrect';
+                        pill.textContent = '✕';
+                        div.appendChild(pill);
+                    }
+                } else {
+                    div.addEventListener('click', () => handleSelect(opt.key, opt.label));
+                }
+                
                 optionsContainer.appendChild(div);
             });
+
+            // Show feedback if there's a previous attempt
+            if (previousAttempt) {
+                if (previousAttempt.is_correct) {
+                    feedbackTitle.textContent = 'Correct!';
+                    feedbackAnswer.innerHTML = `You selected the right answer: ${q.options.find(o => o.key === q.correct).label}`;
+                } else {
+                    feedbackTitle.textContent = 'Wrong answer!';
+                    const correctLabel = q.options.find(o => o.key === q.correct).label;
+                    feedbackAnswer.innerHTML = `Correct Answer: ${correctLabel}`;
+                }
+                feedbackExplanation.innerHTML = q.explanation || 'Explanation not available.';
+            }
+            
+            updateNavigationState();
             typesetMath();
         }
 
-        function handleSelect(selectedKey) {
+        function handleSelect(selectedKey, selectedText) {
             if (answered) return;
             answered = true;
             const q = questionData[currentIndex];
             const correctKey = q.correct;
+            const isCorrect = selectedKey === correctKey;
+
+            // Save attempt to database
+            saveAttemptToDB(q.id, selectedText, isCorrect);
+
+            // Store in local memory
+            userAttempts[q.id] = {
+                selected_text: selectedText,
+                is_correct: isCorrect
+            };
 
             optionsContainer.querySelectorAll('.option').forEach(opt => {
                 const key = opt.dataset.key;
@@ -270,7 +440,7 @@
                 }
             });
 
-            if (selectedKey === correctKey) {
+            if (isCorrect) {
                 feedbackTitle.textContent = 'Correct!';
                 feedbackAnswer.innerHTML = `You selected the right answer: ${q.options.find(o => o.key === correctKey).label}`;
             } else {
@@ -282,19 +452,110 @@
             feedback.style.display = 'block';
             nextBtn.disabled = false;
             nextBtn.textContent = (currentIndex === questionData.length - 1) ? 'Finish' : 'Next Question →';
+            updateNavigationState();
             typesetMath();
         }
 
-        nextBtn.addEventListener('click', () => {
+        function saveAttemptToDB(questionId, selectedText, isCorrect) {
+            {% if user.is_authenticated %}
+            const formData = new FormData();
+            formData.append('question_id', questionId);
+            formData.append('selected_text', selectedText);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            fetch('/api/save-attempt/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error('Failed to save attempt:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving attempt:', error);
+            });
+            {% else %}
+            // User not authenticated, just store locally
+            console.log('User not authenticated, attempt not saved to database');
+            {% endif %}
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function goToNext() {
             if (currentIndex < questionData.length - 1) {
                 currentIndex += 1;
                 renderQuestion();
             } else {
-                // Restart or redirect as needed
-                currentIndex = 0;
+                // If on last question, redirect to dashboard
+                window.location.href = '/dashboard/';
+            }
+        }
+
+        function goToPrev() {
+            if (currentIndex > 0) {
+                currentIndex -= 1;
                 renderQuestion();
             }
-        });
+        }
+
+        nextBtn.addEventListener('click', goToNext);
+        prevBtn.addEventListener('click', goToPrev);
+
+        // Report icon click handler
+        const reportIconEl = document.getElementById('report-icon');
+        if (reportIconEl) {
+            reportIconEl.addEventListener('click', () => {
+                const currentQuestion = questionData[currentIndex];
+                if (confirm('Do you want to report this question?')) {
+                    reportQuestionToDB(currentQuestion.id);
+                }
+            });
+        }
+
+        function reportQuestionToDB(questionId) {
+            const formData = new FormData();
+            formData.append('question_id', questionId);
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            fetch('/api/report-question/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Question reported. Thank you for your feedback!');
+                } else {
+                    alert('Failed to report question: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error reporting question:', error);
+                alert('An error occurred while reporting the question.');
+            });
+        }
 
         function typesetMath() {
             if (window.MathJax && window.MathJax.typesetPromise) {

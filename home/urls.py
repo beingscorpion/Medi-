@@ -31,6 +31,8 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('chapter/<slug:slug>/', views.paper_selection_view, name='paper_selection'),
     path('mcq/<slug:slug>/<str:paper_type>/', views.mcq_view, name='mcq'),
+    path('api/save-attempt/', views.save_attempt, name='save_attempt'),
+    path('api/report-question/', views.report_question, name='report_question'),
     
     path('logout', views.logout_view, name='logout'),
     # path('login/', views.login.as_view(), name='login'),

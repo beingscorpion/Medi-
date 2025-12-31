@@ -40,9 +40,13 @@
       
             <!-- Right: Login -->
             <div>
+                {% if user.is_authenticated %}
+                <a href="/dashboard/" > <button class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">Dashboard</button></a>
+                {% else %}
               <button name="login" onclick="openLogin()" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
                 Login
               </button>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -121,7 +125,7 @@
             <div class="login-body">
                 <!-- Google Sign In -->
                 
-                <a href="{% provider_login_url 'google' %}" class="google-btn">
+                <a href="{% provider_login_url 'google' next='/dashboard/' %}" class="google-btn">
                     <svg class="google-icon" viewBox="0 0 24 24">
                         <path fill="#4285F4"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

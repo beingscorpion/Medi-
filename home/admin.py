@@ -1,8 +1,9 @@
 from django.contrib import admin
 from home.models import *
-
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 # Register your models here.
-
+admin.site.unregister(User)
 
 class ContactFormAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'phone', 'message')
@@ -39,6 +40,13 @@ class UserChapterStatsAdmin(admin.ModelAdmin):
     list_display = ('uc_id', 'user', 'chapter', 'total_questions', 'attempted', 'correct', 'wrong', 'score_percentage', 'last_attempt')
     search_fields = ('user', 'chapter')
     list_filter = ('user', 'chapter')
+
+@admin.register(User)
+class UserAdmin(UserAdmin):
+    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser', 'last_login', 'date_joined')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    list_filter = ('is_active', 'is_staff', 'is_superuser')
+
 
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Chapter, ChapterAdmin)

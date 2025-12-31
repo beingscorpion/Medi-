@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Q
 from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats , Contact
+import json
 
 
 # Create your views here.
@@ -140,8 +141,8 @@ def dashboard_view(request):
                     user=user,
                     chapter=chapter
                 )
-                if created or stats.total_questions == 0:
-                    stats.update_stats()
+                # Always update stats to ensure they're current
+                stats.update_stats()
                 
                 chapter_stats = {
                     'total': stats.total_questions,
@@ -190,6 +191,7 @@ def paper_selection_view(request, slug):
     context = {
         'chapter_name': chapter.title,
         'chapter_description': chapter.description,
+        'chapter_slug': chapter.slug,
     }
 
     return render(request, 'paper_selection.html', context)
@@ -200,12 +202,170 @@ def paper_selection_view(request, slug):
 def mcq_view(request, slug, paper_type):
     """
     MCQ page. Accepts chapter slug and paper type to load appropriate questions.
+    Maps URL paper_type values to model paper_type choices.
     """
-    questions = Question.objects.filter(chapter__slug=slug, paper_type=paper_type)
+    # Map URL paper_type values to model paper_type choices
+    paper_type_mapping = {
+        'mcq': 'MCQ',
+        'book-line-mcq': 'Book Line MCQ',
+        'past-paper-mcq': 'Past Paper MCQ',
+    }
+    
+    # Get the mapped paper_type, default to the original if not found
+    mapped_paper_type = paper_type_mapping.get(paper_type.lower(), paper_type)
+    
+    # Filter questions by chapter slug and paper type
+    questions = Question.objects.filter(chapter__slug=slug, paper_type=mapped_paper_type)
+    
+    # Get user attempts if authenticated
+    user_attempts = {}
+    if request.user.is_authenticated:
+        attempts = UserQuestionAttempt.objects.filter(
+            user=request.user,
+            question__in=questions
+        ).select_related('question')
+        for attempt in attempts:
+            user_attempts[attempt.question.q_id] = {
+                'selected_text': attempt.selected_text,
+                'is_correct': attempt.is_correct,
+            }
+    
+    # Convert questions to JSON format for the template
+    questions_data = []
+    for q in questions:
+        options = []
+        if q.key1:
+            options.append({'key': '1', 'label': q.key1})
+        if q.key2:
+            options.append({'key': '2', 'label': q.key2})
+        if q.key3:
+            options.append({'key': '3', 'label': q.key3})
+        if q.key4:
+            options.append({'key': '4', 'label': q.key4})
+        
+        # Determine correct answer key
+        correct_key = None
+        if q.correct_text:
+            # Try to match correct_text with one of the keys
+            if q.correct_text == q.key1:
+                correct_key = '1'
+            elif q.correct_text == q.key2:
+                correct_key = '2'
+            elif q.correct_text == q.key3:
+                correct_key = '3'
+            elif q.correct_text == q.key4:
+                correct_key = '4'
+            else:
+                # If correct_text is a number (1-4), use it directly
+                if q.correct_text.strip() in ['1', '2', '3', '4']:
+                    correct_key = q.correct_text.strip()
+        
+        # Get user's previous attempt for this question
+        attempt_data = user_attempts.get(q.q_id, {})
+        
+        questions_data.append({
+            'id': q.q_id,
+            'question': q.question,
+            'options': options,
+            'correct': correct_key,  # Default to '1' if not found
+            'explanation': q.explanation or 'No explanation available.',
+            'selected': attempt_data.get('selected_text', ''),
+            'is_correct': attempt_data.get('is_correct', None),
+        })
+    
     context = {
-        'questions': questions,
+        'questions_json': json.dumps(questions_data),
+        'test_title': f'{mapped_paper_type} Practice',
+        'questions': questions,  # Keep for backward compatibility if needed
+        'user': request.user,
     }
     return render(request, 'mcq.html', context)
+
+
+@login_required
+@require_http_methods(["POST"])
+@csrf_exempt
+def save_attempt(request):
+    """Save user's answer attempt to database"""
+    try:
+        question_id = request.POST.get('question_id')
+        selected_text = request.POST.get('selected_text')
+        
+        if not question_id or not selected_text:
+            return JsonResponse({'success': False, 'error': 'Missing required fields'}, status=400)
+        
+        question = Question.objects.get(q_id=question_id)
+        
+        # Determine if answer is correct
+        is_correct = False
+        if question.correct_text:
+            # Map correct_text to the actual option text
+            key_map = {
+                '1': question.key1,
+                '2': question.key2,
+                '3': question.key3,
+                '4': question.key4,
+            }
+            
+            # Check if correct_text is a key (1-4)
+            if question.correct_text.strip() in ['1', '2', '3', '4']:
+                correct_option_text = key_map.get(question.correct_text.strip())
+                if selected_text == correct_option_text:
+                    is_correct = True
+            # Otherwise, check if correct_text directly matches selected_text
+            elif selected_text == question.correct_text:
+                is_correct = True
+        
+        # Get or create attempt
+        attempt, created = UserQuestionAttempt.objects.get_or_create(
+            user=request.user,
+            question=question,
+            defaults={
+                'selected_text': selected_text,
+                'is_correct': is_correct,
+            }
+        )
+        
+        if not created:
+            # Update existing attempt
+            attempt.selected_text = selected_text
+            attempt.is_correct = is_correct
+            attempt.save()
+        
+        # Update chapter stats after saving attempt
+        chapter_stats, _ = UserChapterStats.objects.get_or_create(
+            user=request.user,
+            chapter=question.chapter
+        )
+        chapter_stats.update_stats()
+        
+        return JsonResponse({'success': True, 'is_correct': is_correct})
+    except Question.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Question not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+@csrf_exempt
+def report_question(request):
+    """Report a question"""
+    try:
+        question_id = request.POST.get('question_id')
+        
+        if not question_id:
+            return JsonResponse({'success': False, 'error': 'Missing question_id'}, status=400)
+        
+        question = Question.objects.get(q_id=question_id)
+        question.report = True
+        question.save()
+        
+        return JsonResponse({'success': True, 'message': 'Question reported successfully'})
+    except Question.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Question not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 # @csrf_exempt
 # @require_http_methods(["POST"])
