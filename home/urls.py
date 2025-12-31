@@ -31,12 +31,10 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('chapter/<slug:slug>/', views.paper_selection_view, name='paper_selection'),
     path('mcq/<slug:slug>/<str:paper_type>/', views.mcq_view, name='mcq'),
+    path('past-paper/<slug:slug>/', views.past_paper_mcq_view, name='past_paper_mcq'),
     path('api/save-attempt/', views.save_attempt, name='save_attempt'),
+    path('api/save-past-paper-attempt/', views.save_past_paper_attempt, name='save_past_paper_attempt'),
     path('api/report-question/', views.report_question, name='report_question'),
-    
-    # Past Paper URLs
-    path('past-paper/<int:province_id>/<int:subject_id>/', views.past_paper_years_view, name='past_paper_years'),
-    path('past-paper/download/<int:past_paper_id>/', views.download_past_paper, name='download_past_paper'),
     
     path('logout', views.logout_view, name='logout'),
     # path('login/', views.login.as_view(), name='login'),

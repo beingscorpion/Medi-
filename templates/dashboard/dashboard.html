@@ -404,6 +404,20 @@
             border: 2px solid #8b5cf6;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
         }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        .sidebar-menu a.sidebar-active {
+            background: #f3e8ff;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
      </style>
  </head>
  <body>
@@ -427,9 +441,9 @@
                  </div>
              </div>
  
-            <ul class="sidebar-menu">
-                <li><a href="#" data-mode="mock-test"><span class="icon math"></span>MDcat</a></li>
-                <li><a href="#" data-mode="past-paper"><span class="icon physics"></span>Past Paper</a></li>
+             <ul class="sidebar-menu">
+                 <li><a href="#" data-view="mdcat" class="sidebar-active"><span class="icon math"></span>MDcat</a></li>
+                 <li><a href="#" data-view="past-paper"><span class="icon physics"></span>Past Paper</a></li>
                  {% comment %} <li><a href="#"><span class="icon chemistry">🧪</span>Chemistry</a></li>
                  <li><a href="#"><span class="icon biology">🧬</span>Biology</a></li>
                  <li><a href="#"><span class="icon english">📝</span>English</a></li>
@@ -438,8 +452,8 @@
          </aside>
  
         <div class="content">
-            <!-- Mock Test Mode -->
-            <div id="mock-test-content" {% if mode != 'past-paper' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <!-- MDcat View -->
+            <div class="view-section active" data-view-section="mdcat">
            <div class="tabs">
                 <a href="#" class="tab active" data-tab="Biology">Biology</a>
                 <a href="#" class="tab" data-tab="Chemistry">Chemistry</a>
@@ -733,100 +747,182 @@
             {% endif %}
             </div>
 
-            <!-- Past Paper Mode -->
-            <div id="past-paper-content" {% if mode == 'past-paper' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
-                {% if mode == 'past-paper' %}
+            <!-- Past Paper View -->
+            <div class="view-section" data-view-section="past-paper">
+                {% if provinces_data %}
                 <div class="tabs" id="province-tabs">
                     {% for province_name, province_data in provinces_data.items %}
                     <a href="#" class="tab {% if forloop.first %}active{% endif %}" data-tab="{{ province_name }}">{{ province_name }}</a>
-                    {% empty %}
-                    <p>No provinces available. Please add provinces in the admin panel.</p>
                     {% endfor %}
                 </div>
 
                 {% for province_name, province_data in provinces_data.items %}
                 <div class="tab-content {% if forloop.first %}active{% endif %}" data-content="{{ province_name }}">
-                    <div class="section-header">
-                        <h2>{{ province_name }} - Subjects</h2>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-icon total">📊</div>
+                            <div class="stat-info">
+                                <h3>{{ province_data.stats.total }}</h3>
+                                <p>Total Questions</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon pending">⏳</div>
+                            <div class="stat-info">
+                                <h3>{{ province_data.stats.pending }}</h3>
+                                <p>Pending Questions</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon completed">✅</div>
+                            <div class="stat-info">
+                                <h3>{{ province_data.stats.completed }}</h3>
+                                <p>Completed</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="subjects-grid" id="{{ province_name|lower|slugify }}-subjects">
-                        {% for subject in province_data.subjects %}
-                        <div class="subject-card" data-province-id="{{ province_data.province.p_id }}" data-subject-id="{{ subject.ps_id }}">
+                    <div class="section-header">
+                        <h2>{{ province_name }} Past Papers</h2>
+                    </div>
+
+                    <div class="subjects-grid" id="{{ province_name|lower }}-years">
+                        {% for year_data in province_data.years %}
+                        <div class="subject-card" data-year-slug="{{ year_data.year.slug }}">
                             <div class="subject-header">
-                                <div class="subject-icon biology">📄</div>
+                                <div class="subject-icon physics">📄</div>
                                 <div class="subject-info">
-                                    <h3>{{ subject.name }}</h3>
-                                    <p>Click to view available years</p>
+                                    <h3>{{ year_data.year.year }}</h3>
+                                    <p>{{ province_name }} Past Paper</p>
+                                </div>
+                            </div>
+                            <div class="subject-stats">
+                                <div class="subject-stat">
+                                    <div class="number">{{ year_data.stats.total }}</div>
+                                    <div class="label">Questions</div>
+                                </div>
+                                <div class="subject-stat">
+                                    <div class="number">{{ year_data.stats.completed }}</div>
+                                    <div class="label">Completed</div>
+                                </div>
+                                <div class="subject-stat">
+                                    <div class="number">{{ year_data.stats.score|floatformat:0 }}%</div>
+                                    <div class="label">Score</div>
                                 </div>
                             </div>
                         </div>
                         {% empty %}
                         <div class="subject-card">
                             <div class="subject-header">
-                                <div class="subject-icon biology">📄</div>
+                                <div class="subject-icon physics">📄</div>
                                 <div class="subject-info">
-                                    <h3>No Subjects Available</h3>
-                                    <p>Add past papers for {{ province_name }} in the admin panel</p>
+                                    <h3>No Years Available</h3>
+                                    <p>Add years for {{ province_name }} in the admin panel</p>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
-                {% empty %}
-                <div class="tab-content active">
-                    <div class="section-header">
-                        <h2>Past Papers</h2>
-                    </div>
-                    <p>No provinces available. Please add provinces and past papers in the admin panel.</p>
-                </div>
                 {% endfor %}
+                {% else %}
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon total">📊</div>
+                        <div class="stat-info">
+                            <h3>0</h3>
+                            <p>Total Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pending">⏳</div>
+                        <div class="stat-info">
+                            <h3>0</h3>
+                            <p>Pending Questions</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon completed">✅</div>
+                        <div class="stat-info">
+                            <h3>0</h3>
+                            <p>Completed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-header">
+                    <h2>Past Papers</h2>
+                </div>
+                <div class="subjects-grid">
+                    <div class="subject-card">
+                        <div class="subject-header">
+                            <div class="subject-icon physics">📄</div>
+                            <div class="subject-info">
+                                <h3>No Provinces Available</h3>
+                                <p>Add provinces in the admin panel</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
             </div>
+
  
     <script>
-        // Sidebar mode switching
-        document.querySelectorAll('[data-mode]').forEach(link => {
+        // Sidebar view switching functionality
+        document.querySelectorAll('.sidebar-menu a[data-view]').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-                const mode = this.getAttribute('data-mode');
-                window.location.href = `{% url 'dashboard' %}?mode=${mode}`;
+                
+                const viewType = this.getAttribute('data-view');
+                
+                // Remove active class from all sidebar links
+                document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('sidebar-active'));
+                this.classList.add('sidebar-active');
+                
+                // Hide all view sections
+                document.querySelectorAll('.view-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show selected view section
+                const viewSection = document.querySelector(`[data-view-section="${viewType}"]`);
+                if (viewSection) {
+                    viewSection.classList.add('active');
+                }
             });
         });
 
-        // Tab switching functionality
+        // Tab switching functionality (works for both MDcat and Past Paper)
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                // Get the parent container (mock-test or past-paper)
-                const parentContainer = this.closest('#mock-test-content, #past-paper-content');
-                if (!parentContainer) return;
+                // Get the parent view section
+                const viewSection = this.closest('.view-section');
+                if (!viewSection) return;
                 
-                // Remove active class from all tabs in this container
-                parentContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Remove active class from all tabs in this view section
+                viewSection.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Hide all tab content in this container
-                parentContainer.querySelectorAll('.tab-content').forEach(content => {
+                // Hide all tab content in this view section
+                viewSection.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
                 
                 // Show selected tab content
                 const tabName = this.getAttribute('data-tab');
-                const content = parentContainer.querySelector(`[data-content="${tabName}"]`);
+                const content = viewSection.querySelector(`[data-content="${tabName}"]`);
                 if (content) {
                     content.classList.add('active');
                 }
             });
         });
 
-        // Chapter card click functionality (Mock Test mode)
-        document.querySelectorAll('#mock-test-content .subject-card').forEach(card => {
+        // Chapter card click functionality (for MDcat)
+        document.querySelectorAll('[data-view-section="mdcat"] .subject-card[data-chapter]').forEach(card => {
             card.addEventListener('click', function() {
                 const chapter = this.getAttribute('data-chapter');
-                const chapterName = this.querySelector('h3').textContent;
                 
                 // Remove selected class from all cards in the same tab
                 const currentTab = this.closest('.tab-content');
@@ -838,21 +934,25 @@
                 // Navigate to paper selection page for this chapter
                 if (chapter) {
                     window.location.href = `/chapter/${chapter}/`;
-                } else {
-                    const subjectSlug = this.getAttribute('data-subject') || 'chapter';
-                    window.location.href = `/chapter/${subjectSlug}/`;
                 }
             });
         });
 
-        // Past Paper subject card click functionality
-        document.querySelectorAll('#past-paper-content .subject-card').forEach(card => {
+        // Year card click functionality (for Past Paper)
+        document.querySelectorAll('[data-view-section="past-paper"] .subject-card[data-year-slug]').forEach(card => {
             card.addEventListener('click', function() {
-                const provinceId = this.getAttribute('data-province-id');
-                const subjectId = this.getAttribute('data-subject-id');
+                const yearSlug = this.getAttribute('data-year-slug');
                 
-                if (provinceId && subjectId) {
-                    window.location.href = `/past-paper/${provinceId}/${subjectId}/`;
+                // Remove selected class from all cards in the same tab
+                const currentTab = this.closest('.tab-content');
+                if (currentTab) {
+                    currentTab.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+                }
+                this.classList.add('selected');
+                
+                // Navigate to past paper MCQs for this year
+                if (yearSlug) {
+                    window.location.href = `/past-paper/${yearSlug}/`;
                 }
             });
         });

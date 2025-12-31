@@ -48,28 +48,33 @@ class UserAdmin(UserAdmin):
     list_filter = ('is_active', 'is_staff', 'is_superuser')
 
 
+class ProvinceAdmin(admin.ModelAdmin):
+    list_display = ('p_id', 'name', 'created_at')
+    search_fields = ('name',)
+    list_filter = ('created_at',)
+
+class PastPaperYearAdmin(admin.ModelAdmin):
+    list_display = ('ppy_id', 'province', 'year', 'slug')
+    search_fields = ('province__name', 'year', 'slug')
+    list_filter = ('province', 'year')
+
+class PastPaperQuestionAdmin(admin.ModelAdmin):
+    list_display = ('ppq_id', 'year', 'question', 'key1', 'key2', 'key3', 'key4', 'correct_text', 'report')
+    search_fields = ('question',)
+    list_filter = ('year', 'report')
+
+class UserPastPaperAttemptAdmin(admin.ModelAdmin):
+    list_display = ('uppa_id', 'user', 'question', 'selected_text', 'is_correct', 'attempted_at')
+    search_fields = ('user', 'question')
+    list_filter = ('user', 'question', 'is_correct')
+
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(UserQuestionAttempt, UserQuestionAttemptAdmin)
 admin.site.register(UserChapterStats, UserChapterStatsAdmin)
 admin.site.register(Contact, ContactFormAdmin)
-
-
-# Past Paper Admin
-class ProvinceAdmin(admin.ModelAdmin):
-    list_display = ('p_id', 'name', 'created_at')
-    search_fields = ('name',)
-
-class PastPaperSubjectAdmin(admin.ModelAdmin):
-    list_display = ('ps_id', 'name', 'created_at')
-    search_fields = ('name',)
-
-class PastPaperAdmin(admin.ModelAdmin):
-    list_display = ('pp_id', 'province', 'subject', 'year', 'created_at')
-    list_filter = ('province', 'subject', 'year')
-    search_fields = ('province__name', 'subject__name', 'year')
-
 admin.site.register(Province, ProvinceAdmin)
-admin.site.register(PastPaperSubject, PastPaperSubjectAdmin)
-admin.site.register(PastPaper, PastPaperAdmin)
+admin.site.register(PastPaperYear, PastPaperYearAdmin)
+admin.site.register(PastPaperQuestion, PastPaperQuestionAdmin)
+admin.site.register(UserPastPaperAttempt, UserPastPaperAttemptAdmin)

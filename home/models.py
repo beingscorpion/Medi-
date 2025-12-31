@@ -187,34 +187,62 @@ class Province(models.Model):
     
     def __str__(self):
         return self.name
-    
-    class Meta:
-        ordering = ['name']
 
-
-class PastPaperSubject(models.Model):
-    ps_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ['name']
-
-
-class PastPaper(models.Model):
-    pp_id = models.AutoField(primary_key=True)
-    province = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='past_papers')
-    subject = models.ForeignKey(PastPaperSubject, on_delete=models.CASCADE, related_name='past_papers')
+class PastPaperYear(models.Model):
+    ppy_id = models.AutoField(primary_key=True)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='years')
     year = models.PositiveIntegerField()
-    pdf_file = models.FileField(upload_to='past_papers/%Y/%m/%d/')
+    slug = models.SlugField(max_length=100)  # For URLs like 'punjab-2023'
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        unique_together = ('province', 'subject', 'year')
-        ordering = ['-year', 'province', 'subject']
+        unique_together = ('province', 'year')
+        ordering = ['province', '-year']
     
     def __str__(self):
-        return f"{self.province.name} - {self.subject.name} - {self.year}"
+        return f"{self.province.name} - {self.year}"
+
+class PastPaperQuestion(models.Model):
+    ppq_id = models.AutoField(primary_key=True)
+    year = models.ForeignKey(PastPaperYear, on_delete=models.CASCADE, related_name='questions')
+    question = models.TextField()
+    
+    # MCQ options
+    key1 = models.CharField(max_length=255, blank=True, null=True)
+    key2 = models.CharField(max_length=255, blank=True, null=True)
+    key3 = models.CharField(max_length=255, blank=True, null=True)
+    key4 = models.CharField(max_length=255, blank=True, null=True)
+    
+    # Correct answer (1-4 for MCQ)
+    correct_text = models.CharField(max_length=255, blank=True, null=True)
+    
+    explanation = models.TextField(blank=True)
+    report = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['year']),
+        ]
+    
+    def __str__(self):
+        return f"{self.year} - Q{self.ppq_id}"
+
+class UserPastPaperAttempt(models.Model):
+    uppa_id = models.AutoField(primary_key=True)
+    """Track each past paper question attempt by user"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='past_paper_attempts')
+    question = models.ForeignKey(PastPaperQuestion, on_delete=models.CASCADE, related_name='user_attempts')
+    selected_text = models.CharField(max_length=255, blank=True, null=True)
+    is_correct = models.BooleanField()
+    attempted_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'question')
+        indexes = [
+            models.Index(fields=['user', 'question']),
+            models.Index(fields=['user', 'is_correct']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.question}"

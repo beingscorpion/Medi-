@@ -26,8 +26,9 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 1400px;
             width: 100%;
+            margin: 0 auto;
         }
 
         .header {
@@ -105,11 +106,15 @@
         }
 
         .paper-options {
-            display: grid;
-            gap: 1rem;
+            display: flex;
+            flex-direction: row;
+            gap: 1.5rem;
+            width: 100%;
         }
 
         .paper-card {
+            flex: 1;
+            min-width: 0;
             background: white;
             border-radius: 12px;
             padding: 2rem;
@@ -118,7 +123,14 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             color: inherit;
-            display: block;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 968px) {
+            .paper-options {
+                flex-direction: column;
+            }
         }
 
         .paper-card:hover {
@@ -167,6 +179,49 @@
             color: #64748b;
             font-size: 0.875rem;
             line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .paper-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+
+        .stat-item .stat-number.total {
+            color: #f59e0b;
+        }
+
+        .stat-item .stat-number.completed {
+            color: #10b981;
+        }
+
+        .stat-item .stat-number.pending {
+            color: #3b82f6;
+        }
+
+        .stat-item .stat-number.score {
+            color: #8b5cf6;
         }
     </style>
 </head>
@@ -195,18 +250,78 @@
                 <div class="paper-icon">📄</div>
                 <h3>MCQ</h3>
                 <p>Practice with multiple choice questions. Get familiar with the questions and the options.</p>
+                {% if paper_stats.mcq %}
+                <div class="paper-stats">
+                    <div class="stat-item">
+                        <span class="stat-number total">{{ paper_stats.mcq.total }}</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number completed">{{ paper_stats.mcq.completed }}</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number pending">{{ paper_stats.mcq.pending }}</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number score">{{ paper_stats.mcq.score|floatformat:0 }}%</span>
+                        <span class="stat-label">Score</span>
+                    </div>
+                </div>
+                {% endif %}
             </a>
 
             <a href="/mcq/{{ chapter_slug }}/book-line-mcq/" class="paper-card">
                 <div class="paper-icon">📄</div>
                 <h3>Book Line MCQ</h3>
                 <p>Practice with questions from the book. Get familiar with the book and the questions. Questions are in the book line format.</p>
+                {% if paper_stats.book_line_mcq %}
+                <div class="paper-stats">
+                    <div class="stat-item">
+                        <span class="stat-number total">{{ paper_stats.book_line_mcq.total }}</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number completed">{{ paper_stats.book_line_mcq.completed }}</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number pending">{{ paper_stats.book_line_mcq.pending }}</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number score">{{ paper_stats.book_line_mcq.score|floatformat:0 }}%</span>
+                        <span class="stat-label">Score</span>
+                    </div>
+                </div>
+                {% endif %}
             </a>
 
             <a href="/mcq/{{ chapter_slug }}/past-paper-mcq/" class="paper-card">
                 <div class="paper-icon">📄</div>
                 <h3>Past Paper MCQ</h3>
                 <p>Practice with questions from previous exams and tests. Get familiar with the exam pattern and difficulty level. Questions are from previous exams and tests.</p>
+                {% if paper_stats.past_paper_mcq %}
+                <div class="paper-stats">
+                    <div class="stat-item">
+                        <span class="stat-number total">{{ paper_stats.past_paper_mcq.total }}</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number completed">{{ paper_stats.past_paper_mcq.completed }}</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number pending">{{ paper_stats.past_paper_mcq.pending }}</span>
+                        <span class="stat-label">Pending</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number score">{{ paper_stats.past_paper_mcq.score|floatformat:0 }}%</span>
+                        <span class="stat-label">Score</span>
+                    </div>
+                </div>
+                {% endif %}
             </a>
 
         </div>

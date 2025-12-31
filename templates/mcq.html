@@ -463,7 +463,10 @@
             formData.append('selected_text', selectedText);
             formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
-            fetch('/api/save-attempt/', {
+            // Use different endpoint for past papers
+            const saveUrl = {% if is_past_paper %}'/api/save-past-paper-attempt/'{% else %}'/api/save-attempt/'{% endif %};
+
+            fetch(saveUrl, {
                 method: 'POST',
                 body: formData,
                 headers: {
