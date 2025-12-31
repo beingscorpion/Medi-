@@ -12,7 +12,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Q
-from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats , Contact
+from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats , Contact, Province, PastPaperSubject, PastPaper
+from django.http import FileResponse, Http404
 import json
 
 
@@ -93,92 +94,109 @@ def contact(request):
 
 @login_required
 def dashboard_view(request):
-    # chapters = Chapter.objects.filter(subject__name=subject_name)
-    # total_questions = Question.objects.filter(chapter__subject__name=subject_name).count()
-    
-    # user_attempts = UserQuestionAttempt.objects.filter(
-    #     user=user,
-    #     question__chapter__subject__name=subject_name
-    # )
-    # completed = user_attempts.count()
-    # pending = total_questions - completed
-
-    
+    # Get the mode from request (default to 'mock-test')
+    mode = request.GET.get('mode', 'mock-test')
     
     # Get user (or None if not authenticated)
     user = request.user if request.user.is_authenticated else None
     
-    # Get all subjects
-    subjects = Subject.objects.all().order_by('name')
-    
-    # Prepare subject data with chapters and stats
-    subjects_data = {}
-    
-    for subject in subjects:
-        # Get all chapters for this subject
-        chapters = Chapter.objects.filter(subject=subject).order_by('chapter_no')
-        
-        # Calculate subject-level stats
-        total_questions = Question.objects.filter(chapter__subject=subject).count()
-        
-        if user:
-            user_attempts = UserQuestionAttempt.objects.filter(
-                user=user,
-                question__chapter__subject=subject
-            )
-            completed = user_attempts.count()
-            pending = total_questions - completed
-        else:
-            completed = 0
-            pending = total_questions
-        
-        # Prepare chapter data with stats
-        chapters_data = []
-        for chapter in chapters:
-            # Get or create user stats for this chapter
-            if user:
-                stats, created = UserChapterStats.objects.get_or_create(
-                    user=user,
-                    chapter=chapter
-                )
-                # Always update stats to ensure they're current
-                stats.update_stats()
-                
-                chapter_stats = {
-                    'total': stats.total_questions,
-                    'completed': stats.attempted,
-                    'pending': stats.pending,
-                    'score': float(stats.score_percentage)
-                }
-            else:
-                # For non-authenticated users, just show total questions
-                total_chapter_questions = chapter.questions.count()
-                chapter_stats = {
-                    'total': total_chapter_questions,
-                    'completed': 0,
-                    'pending': total_chapter_questions,
-                    'score': 0
-                }
-            
-            chapters_data.append({
-                'chapter': chapter,
-                'stats': chapter_stats
-            })
-        
-        subjects_data[subject.name] = {
-            'subject': subject,
-            'chapters': chapters_data,
-            'stats': {
-                'total': total_questions,
-                'completed': completed,
-                'pending': pending
-            }
-        }
-    
     context = {
-        'subjects_data': subjects_data,
+        'mode': mode,
         'user': user
     }
+    
+    if mode == 'past-paper':
+        # Past Paper mode - show provinces and subjects
+        provinces = Province.objects.all().order_by('name')
+        subjects = PastPaperSubject.objects.all().order_by('name')
+        
+        # Prepare province data with subjects
+        provinces_data = {}
+        for province in provinces:
+            # Get all subjects that have past papers for this province
+            past_papers = PastPaper.objects.filter(province=province)
+            subject_ids = past_papers.values_list('subject', flat=True).distinct()
+            province_subjects = PastPaperSubject.objects.filter(ps_id__in=subject_ids)
+            
+            provinces_data[province.name] = {
+                'province': province,
+                'subjects': province_subjects
+            }
+        
+        context.update({
+            'provinces_data': provinces_data,
+            'all_subjects': subjects
+        })
+    else:
+        # Mock Test mode - original functionality
+        # Get all subjects
+        subjects = Subject.objects.all().order_by('name')
+        
+        # Prepare subject data with chapters and stats
+        subjects_data = {}
+        
+        for subject in subjects:
+            # Get all chapters for this subject
+            chapters = Chapter.objects.filter(subject=subject).order_by('chapter_no')
+            
+            # Calculate subject-level stats
+            total_questions = Question.objects.filter(chapter__subject=subject).count()
+            
+            if user:
+                user_attempts = UserQuestionAttempt.objects.filter(
+                    user=user,
+                    question__chapter__subject=subject
+                )
+                completed = user_attempts.count()
+                pending = total_questions - completed
+            else:
+                completed = 0
+                pending = total_questions
+            
+            # Prepare chapter data with stats
+            chapters_data = []
+            for chapter in chapters:
+                # Get or create user stats for this chapter
+                if user:
+                    stats, created = UserChapterStats.objects.get_or_create(
+                        user=user,
+                        chapter=chapter
+                    )
+                    # Always update stats to ensure they're current
+                    stats.update_stats()
+                    
+                    chapter_stats = {
+                        'total': stats.total_questions,
+                        'completed': stats.attempted,
+                        'pending': stats.pending,
+                        'score': float(stats.score_percentage)
+                    }
+                else:
+                    # For non-authenticated users, just show total questions
+                    total_chapter_questions = chapter.questions.count()
+                    chapter_stats = {
+                        'total': total_chapter_questions,
+                        'completed': 0,
+                        'pending': total_chapter_questions,
+                        'score': 0
+                    }
+                
+                chapters_data.append({
+                    'chapter': chapter,
+                    'stats': chapter_stats
+                })
+            
+            subjects_data[subject.name] = {
+                'subject': subject,
+                'chapters': chapters_data,
+                'stats': {
+                    'total': total_questions,
+                    'completed': completed,
+                    'pending': pending
+                }
+            }
+        
+        context['subjects_data'] = subjects_data
     
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -465,6 +483,71 @@ def report_question(request):
 def logout_view(request):
     django_logout(request)
     return redirect('/')
+
+
+# Past Paper Views
+@login_required
+def past_paper_years_view(request, province_id, subject_id):
+    """
+    Show years available for a specific province and subject combination
+    """
+    try:
+        province = Province.objects.get(p_id=province_id)
+        subject = PastPaperSubject.objects.get(ps_id=subject_id)
+        
+        # Get all past papers for this province and subject, ordered by year
+        past_papers = PastPaper.objects.filter(
+            province=province,
+            subject=subject
+        ).order_by('-year')
+        
+        # Get unique years with their corresponding past paper
+        years_list = []
+        seen_years = set()
+        for past_paper in past_papers:
+            if past_paper.year not in seen_years:
+                years_list.append({
+                    'year': past_paper.year,
+                    'past_paper': past_paper
+                })
+                seen_years.add(past_paper.year)
+        
+        context = {
+            'province': province,
+            'subject': subject,
+            'years_list': years_list
+        }
+        
+        return render(request, 'past_paper_years.html', context)
+    except (Province.DoesNotExist, PastPaperSubject.DoesNotExist):
+        messages.error(request, 'Province or Subject not found')
+        return redirect('dashboard')
+
+
+@login_required
+def download_past_paper(request, past_paper_id):
+    """
+    Download a past paper PDF
+    """
+    try:
+        past_paper = PastPaper.objects.get(pp_id=past_paper_id)
+        
+        if past_paper.pdf_file and past_paper.pdf_file.name:
+            try:
+                file = past_paper.pdf_file.open('rb')
+                response = FileResponse(
+                    file,
+                    content_type='application/pdf'
+                )
+                filename = f"{past_paper.province.name}_{past_paper.subject.name}_{past_paper.year}.pdf"
+                response['Content-Disposition'] = f'attachment; filename="{filename}"'
+                return response
+            except Exception as e:
+                raise Http404(f"Error opening PDF file: {str(e)}")
+        else:
+            raise Http404("PDF file not found")
+    except PastPaper.DoesNotExist:
+        raise Http404("Past paper not found")
 
 
 

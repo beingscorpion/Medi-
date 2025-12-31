@@ -177,3 +177,44 @@ class UserChapterStats(models.Model):
         last_attempt = attempts.order_by('-attempted_at').first()
         self.last_attempt = last_attempt.attempted_at if last_attempt else None
         self.save()
+
+
+# Past Paper Models
+class Province(models.Model):
+    p_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        ordering = ['name']
+
+
+class PastPaperSubject(models.Model):
+    ps_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        ordering = ['name']
+
+
+class PastPaper(models.Model):
+    pp_id = models.AutoField(primary_key=True)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='past_papers')
+    subject = models.ForeignKey(PastPaperSubject, on_delete=models.CASCADE, related_name='past_papers')
+    year = models.PositiveIntegerField()
+    pdf_file = models.FileField(upload_to='past_papers/%Y/%m/%d/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('province', 'subject', 'year')
+        ordering = ['-year', 'province', 'subject']
+    
+    def __str__(self):
+        return f"{self.province.name} - {self.subject.name} - {self.year}"

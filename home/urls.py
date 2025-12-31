@@ -34,6 +34,10 @@ urlpatterns = [
     path('api/save-attempt/', views.save_attempt, name='save_attempt'),
     path('api/report-question/', views.report_question, name='report_question'),
     
+    # Past Paper URLs
+    path('past-paper/<int:province_id>/<int:subject_id>/', views.past_paper_years_view, name='past_paper_years'),
+    path('past-paper/download/<int:past_paper_id>/', views.download_past_paper, name='download_past_paper'),
+    
     path('logout', views.logout_view, name='logout'),
     # path('login/', views.login.as_view(), name='login'),
     # path('login/', views.login_view, name='login')

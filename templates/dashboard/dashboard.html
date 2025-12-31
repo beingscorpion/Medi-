@@ -427,9 +427,9 @@
                  </div>
              </div>
  
-             <ul class="sidebar-menu">
-                 <li><a href="#"><span class="icon math"></span>MDcat</a></li>
-                 <li><a href="#"><span class="icon physics"></span>Mock Test</a></li>
+            <ul class="sidebar-menu">
+                <li><a href="#" data-mode="mock-test"><span class="icon math"></span>MDcat</a></li>
+                <li><a href="#" data-mode="past-paper"><span class="icon physics"></span>Past Paper</a></li>
                  {% comment %} <li><a href="#"><span class="icon chemistry">🧪</span>Chemistry</a></li>
                  <li><a href="#"><span class="icon biology">🧬</span>Biology</a></li>
                  <li><a href="#"><span class="icon english">📝</span>English</a></li>
@@ -437,10 +437,10 @@
              </ul>
          </aside>
  
-         <div class="content">
-             
- 
-            <div class="tabs">
+        <div class="content">
+            <!-- Mock Test Mode -->
+            <div id="mock-test-content" {% if mode != 'past-paper' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+           <div class="tabs">
                 <a href="#" class="tab active" data-tab="Biology">Biology</a>
                 <a href="#" class="tab" data-tab="Chemistry">Chemistry</a>
                 <a href="#" class="tab" data-tab="Physics">Physics</a>
@@ -731,34 +731,99 @@
                 </div>
             </div>
             {% endif %}
+            </div>
 
+            <!-- Past Paper Mode -->
+            <div id="past-paper-content" {% if mode == 'past-paper' %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                {% if mode == 'past-paper' %}
+                <div class="tabs" id="province-tabs">
+                    {% for province_name, province_data in provinces_data.items %}
+                    <a href="#" class="tab {% if forloop.first %}active{% endif %}" data-tab="{{ province_name }}">{{ province_name }}</a>
+                    {% empty %}
+                    <p>No provinces available. Please add provinces in the admin panel.</p>
+                    {% endfor %}
+                </div>
+
+                {% for province_name, province_data in provinces_data.items %}
+                <div class="tab-content {% if forloop.first %}active{% endif %}" data-content="{{ province_name }}">
+                    <div class="section-header">
+                        <h2>{{ province_name }} - Subjects</h2>
+                    </div>
+
+                    <div class="subjects-grid" id="{{ province_name|lower|slugify }}-subjects">
+                        {% for subject in province_data.subjects %}
+                        <div class="subject-card" data-province-id="{{ province_data.province.p_id }}" data-subject-id="{{ subject.ps_id }}">
+                            <div class="subject-header">
+                                <div class="subject-icon biology">📄</div>
+                                <div class="subject-info">
+                                    <h3>{{ subject.name }}</h3>
+                                    <p>Click to view available years</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="subject-card">
+                            <div class="subject-header">
+                                <div class="subject-icon biology">📄</div>
+                                <div class="subject-info">
+                                    <h3>No Subjects Available</h3>
+                                    <p>Add past papers for {{ province_name }} in the admin panel</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="tab-content active">
+                    <div class="section-header">
+                        <h2>Past Papers</h2>
+                    </div>
+                    <p>No provinces available. Please add provinces and past papers in the admin panel.</p>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
  
     <script>
+        // Sidebar mode switching
+        document.querySelectorAll('[data-mode]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const mode = this.getAttribute('data-mode');
+                window.location.href = `{% url 'dashboard' %}?mode=${mode}`;
+            });
+        });
+
         // Tab switching functionality
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                // Remove active class from all tabs
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Get the parent container (mock-test or past-paper)
+                const parentContainer = this.closest('#mock-test-content, #past-paper-content');
+                if (!parentContainer) return;
+                
+                // Remove active class from all tabs in this container
+                parentContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Hide all tab content
-                document.querySelectorAll('.tab-content').forEach(content => {
+                // Hide all tab content in this container
+                parentContainer.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
                 
                 // Show selected tab content
                 const tabName = this.getAttribute('data-tab');
-                const content = document.querySelector(`[data-content="${tabName}"]`);
+                const content = parentContainer.querySelector(`[data-content="${tabName}"]`);
                 if (content) {
                     content.classList.add('active');
                 }
             });
         });
 
-        // Chapter card click functionality
-        document.querySelectorAll('.subject-card').forEach(card => {
+        // Chapter card click functionality (Mock Test mode)
+        document.querySelectorAll('#mock-test-content .subject-card').forEach(card => {
             card.addEventListener('click', function() {
                 const chapter = this.getAttribute('data-chapter');
                 const chapterName = this.querySelector('h3').textContent;
@@ -776,6 +841,18 @@
                 } else {
                     const subjectSlug = this.getAttribute('data-subject') || 'chapter';
                     window.location.href = `/chapter/${subjectSlug}/`;
+                }
+            });
+        });
+
+        // Past Paper subject card click functionality
+        document.querySelectorAll('#past-paper-content .subject-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const provinceId = this.getAttribute('data-province-id');
+                const subjectId = this.getAttribute('data-subject-id');
+                
+                if (provinceId && subjectId) {
+                    window.location.href = `/past-paper/${provinceId}/${subjectId}/`;
                 }
             });
         });
