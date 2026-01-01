@@ -246,6 +246,7 @@ def dashboard_view(request):
     return render(request, 'dashboard/dashboard.html', context)
 
 
+@login_required
 def paper_selection_view(request, slug):
     """
     Paper type selection page - shows options for Past Papers, Subject Paper, Theory Paper
@@ -304,6 +305,7 @@ def paper_selection_view(request, slug):
 
 
 
+@login_required
 def mcq_view(request, slug, paper_type):
     """
     MCQ page. Accepts chapter slug and paper type to load appropriate questions.
@@ -568,6 +570,7 @@ def report_question(request):
 #             'error': str(e)
 #         }, status=500)
 
+@login_required
 def past_paper_mcq_view(request, slug):
     """
     Past Paper MCQ page. Accepts year slug to load appropriate questions.
@@ -704,6 +707,7 @@ def save_past_paper_attempt(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
+@login_required
 def logout_view(request):
     django_logout(request)
     return redirect('/')
