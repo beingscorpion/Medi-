@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Question Type</title>
-    {% load static %}
+    {% comment %} {% load static %}
     <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
-    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet"> {% endcomment %}
     <style>
         * {
             margin: 0;
@@ -20,9 +20,11 @@
             color: #1e293b;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            position: relative;
         }
 
         .container {
@@ -143,6 +145,25 @@
             transform: translateY(-2px);
         }
 
+        /* Touch-friendly styles */
+        @media (hover: none) and (pointer: coarse) {
+            .paper-card:hover {
+                transform: none;
+            }
+            
+            .paper-card:active {
+                transform: scale(0.98);
+            }
+
+            .back-btn:hover {
+                background: white;
+            }
+
+            .back-btn:active {
+                background: #f1f5f9;
+            }
+        }
+
         .paper-icon {
             width: 48px;
             height: 48px;
@@ -223,11 +244,227 @@
         .stat-item .stat-number.score {
             color: #8b5cf6;
         }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 968px) {
+            body {
+                padding: 1rem;
+                align-items: flex-start;
+                min-height: 100vh;
+            }
+
+            .back-btn {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 1rem;
+                align-self: flex-start;
+                width: auto;
+            }
+
+            .container {
+                width: 100%;
+            }
+
+            .header {
+                margin-bottom: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 0.875rem;
+            }
+
+            .chapter-info {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .chapter-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .chapter-info h2 {
+                font-size: 1.125rem;
+            }
+
+            .chapter-info p {
+                font-size: 0.8125rem;
+            }
+
+            .paper-card {
+                padding: 1rem;
+            }
+
+            .paper-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .paper-card h3 {
+                font-size: 1.125rem;
+            }
+
+            .paper-card p {
+                font-size: 0.8125rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .back-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .header p {
+                font-size: 0.8125rem;
+            }
+
+            .chapter-info {
+                padding: 0.875rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .chapter-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            .chapter-info h2 {
+                font-size: 1rem;
+            }
+
+            .paper-card {
+                padding: 0.875rem;
+            }
+
+            .paper-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            .paper-card h3 {
+                font-size: 1rem;
+            }
+
+            .paper-card p {
+                font-size: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .paper-stats {
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+                padding-top: 0.5rem;
+            }
+
+            .stat-number {
+                font-size: 1.125rem;
+            }
+
+            .stat-label {
+                font-size: 0.6875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .back-btn {
+                padding: 0.5rem;
+                font-size: 0.8125rem;
+            }
+
+            .back-btn span {
+                display: none;
+            }
+
+            .header {
+                margin-bottom: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.125rem;
+            }
+
+            .header p {
+                font-size: 0.75rem;
+            }
+
+            .chapter-info {
+                padding: 0.75rem;
+            }
+
+            .chapter-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .chapter-info h2 {
+                font-size: 0.9375rem;
+            }
+
+            .chapter-info p {
+                font-size: 0.6875rem;
+            }
+
+            .paper-card {
+                padding: 0.75rem;
+            }
+
+            .paper-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .paper-card h3 {
+                font-size: 0.9375rem;
+            }
+
+            .paper-card p {
+                font-size: 0.6875rem;
+            }
+
+            .stat-number {
+                font-size: 1rem;
+            }
+
+            .stat-label {
+                font-size: 0.625rem;
+            }
+        }
     </style>
 </head>
 <body>
     <a href="/dashboard/" class="back-btn">
-        <span>←</span> Back to Dashboard
+        Back to Dashboard
     </a>
 
     <div class="container">

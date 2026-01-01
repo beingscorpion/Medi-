@@ -19,6 +19,33 @@
             margin: -16px -16px 16px -16px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+        }
+        .back-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: #64748b;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 12px;
+        }
+        .back-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
         }
         .logo-link {
             display: flex;
@@ -118,6 +145,47 @@
             transition: all 0.2s ease;
         }
         .option:hover { transform: translateY(-1px); }
+
+        /* Touch-friendly styles */
+        @media (hover: none) and (pointer: coarse) {
+            .option:hover {
+                transform: none;
+            }
+            
+            .option:active {
+                transform: scale(0.98);
+                background: #e2e8f0;
+            }
+
+            .nav-arrow:hover:not(:disabled) {
+                border-color: #e2e8f0;
+                color: #64748b;
+                background: white;
+            }
+
+            .nav-arrow:active:not(:disabled) {
+                border-color: #8b5cf6;
+                color: #8b5cf6;
+                background: #f5f3ff;
+            }
+
+            .cta button:hover:not(:disabled) {
+                transform: none;
+            }
+
+            .cta button:active:not(:disabled) {
+                transform: scale(0.98);
+            }
+
+            .back-btn:hover {
+                background: white;
+            }
+
+            .back-btn:active {
+                background: #f1f5f9;
+                transform: scale(0.98);
+            }
+        }
         .option.disabled {
             pointer-events: none;
             opacity: 0.9;
@@ -229,6 +297,150 @@
             cursor: not-allowed;
             box-shadow: none;
         }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                overflow-x: hidden;
+            }
+
+            .page {
+                max-width: 100%;
+                padding: 12px 12px 40px;
+            }
+
+            .header {
+                padding: 10px 12px;
+                margin: -12px -12px 12px -12px;
+            }
+
+            .back-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 13px;
+                margin-right: 8px;
+            }
+
+            .logo-img {
+                height: 28px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .card {
+                padding: 14px;
+                border-radius: 12px;
+            }
+
+            .question-text {
+                font-size: 15px;
+                line-height: 1.4;
+            }
+
+            .option {
+                padding: 14px 12px;
+                font-size: 14px;
+                min-height: 48px;
+            }
+
+            .option:hover {
+                transform: none;
+            }
+
+            .option:active {
+                transform: scale(0.98);
+            }
+
+            .nav-arrow {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+
+            .cta button {
+                padding: 14px;
+                font-size: 14px;
+            }
+
+            .feedback {
+                padding: 12px 14px 14px;
+            }
+
+            .explanation {
+                font-size: 13px;
+            }
+
+            .navigation-container {
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding: 10px 10px 36px;
+            }
+
+            .header {
+                padding: 8px 10px;
+                margin: -10px -10px 10px -10px;
+            }
+
+            .back-btn {
+                padding: 0.5rem;
+                font-size: 12px;
+                margin-right: 6px;
+            }
+
+            .back-btn span {
+                display: none;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .card {
+                padding: 12px;
+            }
+
+            .question-text {
+                font-size: 14px;
+            }
+
+            .option {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
+
+            .nav-arrow {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .cta button {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            .progress {
+                font-size: 14px;
+            }
+
+            .counter {
+                font-size: 12px;
+            }
+        }
     </style>
     <!-- MathJax for rendering mathematical expressions -->
     <script>
@@ -242,14 +454,19 @@
 <body>
     <div class="page">
         <div class="header">
-            <a href="/dashboard/" class="logo-link">
-                {% load static %}
-                <img class="logo-img" src="{% static 'images/logo.svg' %}" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div style="display: none; align-items: center; gap: 8px; font-weight: 700; font-size: 1.25rem; color: #8b5cf6;">
-                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6, #a855f7); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">M</div>
-                    <span>MedSol</span>
-                </div>
-            </a>
+            <div class="header-left">
+                <a href="#" class="back-btn" id="back-btn">
+                    <span>←</span> Back
+                </a>
+                <a href="/dashboard/" class="logo-link">
+                    {% load static %}
+                    <img class="logo-img" src="{% static 'images/logo.svg' %}" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; align-items: center; gap: 8px; font-weight: 700; font-size: 1.25rem; color: #8b5cf6;">
+                        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6, #a855f7); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">M</div>
+                        <span>MedSol</span>
+                    </div>
+                </a>
+            </div>
         </div>
         
         <div class="top-bar">
@@ -463,10 +680,7 @@
             formData.append('selected_text', selectedText);
             formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
 
-            // Use different endpoint for past papers
-            const saveUrl = {% if is_past_paper %}'/api/save-past-paper-attempt/'{% else %}'/api/save-attempt/'{% endif %};
-
-            fetch(saveUrl, {
+            fetch('/api/save-attempt/', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -564,6 +778,29 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise();
             }
+        }
+
+        // Back button handler
+        const backBtn = document.getElementById('back-btn');
+        if (backBtn) {
+            backBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Try to construct the paper selection URL from current URL
+                const currentPath = window.location.pathname;
+                // URL pattern: /mcq/{chapter_slug}/{paper_type}/
+                const pathParts = currentPath.split('/').filter(part => part);
+                
+                if (pathParts.length >= 2 && pathParts[0] === 'mcq') {
+                    // Extract chapter_slug (second part)
+                    const chapterSlug = pathParts[1];
+                    // Navigate to paper selection page
+                    window.location.href = `/chapter/${chapterSlug}/`;
+                } else {
+                    // Fallback to dashboard if URL pattern doesn't match
+                    window.location.href = '/dashboard/';
+                }
+            });
         }
 
         renderQuestion();
