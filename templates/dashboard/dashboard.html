@@ -78,11 +78,12 @@
              background: linear-gradient(135deg, #8b5cf6, #a855f7);
              color: white;
              border-radius: 12px;
-             padding: 1rem;
+             padding: 1.5rem;
              margin-bottom: 2rem;
              display: flex;
              align-items: center;
              gap: 0.75rem;
+             font-size: 1.125rem;
          }
  
          .sidebar-menu {
@@ -116,7 +117,7 @@
              display: flex;
              align-items: center;
              justify-content: center;
-             font-size: 12px;
+             font-size: 14px;
          }
  
          .icon.math { background: #fef3c7; color: #d97706; }
@@ -170,6 +171,7 @@
             min-width: 110px;
             white-space: nowrap;
             letter-spacing: 0.01em;
+            flex-shrink: 0;
         }
 
         .tab:hover {
@@ -325,10 +327,26 @@
              transition: all 0.2s;
              margin-left: auto;
          }
- 
+
          .add-btn:hover {
              transform: translateY(-1px);
              box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+         }
+
+         #logoutBtn {
+             background: linear-gradient(135deg, #ef4444, #dc2626);
+             padding: 0.625rem 1.25rem;
+             font-weight: 600;
+             font-size: 0.875rem;
+             letter-spacing: 0.025em;
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+
+         #logoutBtn:hover {
+             background: linear-gradient(135deg, #dc2626, #b91c1c);
+             box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
          }
  
         .section-header {
@@ -421,6 +439,11 @@
             .add-btn {
                 padding: 0.5rem 1rem;
                 font-size: 0.875rem;
+            }
+
+            #logoutBtn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8125rem;
             }
 
             .main {
@@ -536,8 +559,9 @@
             }
 
             .my-subjects {
-                padding: 0.75rem;
+                padding: 1.25rem;
                 margin-bottom: 1.5rem;
+                font-size: 1rem;
             }
         }
 
@@ -586,7 +610,7 @@
             </a>
         </div>
          
-         <div><button class="add-btn" id="logoutBtn">logout</button></div>
+         <div><button class="add-btn" id="logoutBtn">Logout</button></div>
      </header>
 
      <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -594,14 +618,14 @@
      <main class="main">
          <aside class="sidebar">
              <div class="my-subjects">
-                 <div style="display: flex; align-items: center; justify-content: center;">
-                     <div style="font-weight: 600; padding-left: 10px;">Dashboard</div>
+                 <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                     <div style="font-weight: 600;">Dashboard</div>
                  </div>
              </div>
  
              <ul class="sidebar-menu">
-                 <li><a href="#" data-view="mdcat" class="sidebar-active"><span class="icon math"></span>MDcat</a></li>
-                 <li><a href="#" data-view="past-paper"><span class="icon physics"></span>Past Paper</a></li>
+                 <li><a href="#" data-view="mdcat" class="sidebar-active"><span class="icon math">📚</span>MDcat</a></li>
+                 <li><a href="#" data-view="past-paper"><span class="icon physics">📄</span>Past Paper</a></li>
                  {% comment %} <li><a href="#"><span class="icon chemistry">🧪</span>Chemistry</a></li>
                  <li><a href="#"><span class="icon biology">🧬</span>Biology</a></li>
                  <li><a href="#"><span class="icon english">📝</span>English</a></li>
@@ -618,6 +642,8 @@
                     <a href="#" class="tab {% if forloop.first %}active{% endif %}" data-tab="{{ subject_name }}">{{ subject_name }}</a>
                     {% endfor %}
                 </div>
+
+
 
                 {% for subject_name, subject_data in subjects_data.items %}
                 <div class="tab-content {% if forloop.first %}active{% endif %}" data-content="{{ subject_name }}">
@@ -894,15 +920,6 @@
                 sidebarOverlay.addEventListener('click', closeSidebar);
             }
 
-            // Close sidebar when clicking on a sidebar link (mobile)
-            document.querySelectorAll('.sidebar-menu a').forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        closeSidebar();
-                    }
-                });
-            });
-
             // Handle window resize - close sidebar on mobile when resizing to desktop
             let resizeTimer;
             window.addEventListener('resize', function() {
@@ -914,12 +931,17 @@
                 }, 250);
             });
 
-                // Sidebar view switching functionality
+            // Sidebar view switching functionality
             document.querySelectorAll('.sidebar-menu a[data-view]').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     
                     const viewType = this.getAttribute('data-view');
+                    
+                    // Close sidebar on mobile when clicking a link
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
+                    }
                     
                     // Remove active class from all sidebar links
                     document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('sidebar-active'));
