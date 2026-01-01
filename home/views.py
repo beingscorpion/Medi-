@@ -14,6 +14,7 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Count, Q
 from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats, Contact, Province, PastPaperYear, PastPaperQuestion, UserPastPaperAttempt
 import json
+from django.contrib.admin.views.decorators import staff_member_required 
 
 
 # Create your views here.
@@ -710,6 +711,10 @@ def save_past_paper_attempt(request):
 @login_required
 def logout_view(request):
     django_logout(request)
+    return redirect('/')
+
+
+def socialaccount_login_cancelled(request):
     return redirect('/')
 
 

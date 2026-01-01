@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
+    'home.middleware.AdminAccessMiddleware'
 ]
 
 ROOT_URLCONF = 'Heelo.urls'
@@ -148,6 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Auth redirects
 LOGIN_URL = '/'
 # LOGIN_REDIRECT_URL = '/dashboard/'
+
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

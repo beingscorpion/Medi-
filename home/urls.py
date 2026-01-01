@@ -40,6 +40,7 @@ urlpatterns = [
     # path('login/', views.login.as_view(), name='login'),
     # path('login/', views.login_view, name='login')
     path('accounts/', include('allauth.urls')),
+    path('accounts/social/login/cancelled/', views.socialaccount_login_cancelled, name='socialaccount_login_cancelled')
     # Dashboard (requires authentication)
     # path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
 ]
