@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
-    # 'home.middleware.AdminAccessMiddleware'
+    'home.middleware.AdminAccessMiddleware'
 ]
 
 ROOT_URLCONF = 'Heelo.urls'
