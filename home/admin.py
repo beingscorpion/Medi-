@@ -68,6 +68,21 @@ class UserPastPaperAttemptAdmin(admin.ModelAdmin):
     search_fields = ('user', 'question')
     list_filter = ('user', 'question', 'is_correct')
 
+class QuestionReportAdmin(admin.ModelAdmin):
+    list_display = ('r_id', 'user', 'question', 'past_paper_question', 'description', 'resolved', 'created_at')
+    search_fields = ('user__username', 'description', 'question__question', 'past_paper_question__question')
+    list_filter = ('resolved', 'created_at', 'question', 'past_paper_question')
+    readonly_fields = ('created_at',)
+    list_editable = ('resolved',)
+    
+    # def get_question(self, obj):
+    #     if obj.question:
+    #         return f"Q{obj.question.q_id}: {obj.question.question[:50]}..."
+    #     elif obj.past_paper_question:
+    #         return f"PPQ{obj.past_paper_question.ppq_id}: {obj.past_paper_question.question[:50]}..."
+    #     return "N/A"
+    # get_question.short_description = 'Question'
+
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register(Question, QuestionAdmin)
@@ -78,3 +93,4 @@ admin.site.register(Province, ProvinceAdmin)
 admin.site.register(PastPaperYear, PastPaperYearAdmin)
 admin.site.register(PastPaperQuestion, PastPaperQuestionAdmin)
 admin.site.register(UserPastPaperAttempt, UserPastPaperAttemptAdmin)
+admin.site.register(QuestionReport, QuestionReportAdmin)

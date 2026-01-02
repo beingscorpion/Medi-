@@ -12,49 +12,51 @@
             background: linear-gradient(180deg, #f7f9ff 0%, #fdf6f2 100%);
             color: #0f172a;
         }
-        .header {
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 12px 16px;
-            margin: -16px -16px 16px -16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
         .back-btn {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 16px;
             cursor: pointer;
-            color: #64748b;
+            color: white;
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             margin-right: 12px;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .back-btn:hover::before {
+            left: 100%;
         }
         .back-btn:hover {
-            background: #f1f5f9;
-            color: #1e293b;
-            border-color: #cbd5e1;
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-            flex: 1;
+        .back-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
         }
-        .logo-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-        .logo-img {
-            height: 32px;
-            width: auto;
+        .back-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2.5;
         }
         .page {
             max-width: 440px;
@@ -64,6 +66,7 @@
         .top-bar {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
             margin-bottom: 12px;
         }
@@ -178,12 +181,11 @@
             }
 
             .back-btn:hover {
-                background: white;
+                transform: translateY(-1px);
             }
 
             .back-btn:active {
-                background: #f1f5f9;
-                transform: scale(0.98);
+                transform: translateY(0);
             }
         }
         .option.disabled {
@@ -314,20 +316,18 @@
                 padding: 12px 12px 40px;
             }
 
-            .header {
-                padding: 10px 12px;
-                margin: -12px -12px 12px -12px;
-            }
-
             .back-btn {
-                padding: 0.5rem 0.75rem;
+                padding: 8px 14px;
                 font-size: 13px;
                 margin-right: 8px;
+                gap: 6px;
+            }
+            
+            .back-btn svg {
+                width: 16px;
+                height: 16px;
             }
 
-            .logo-img {
-                height: 28px;
-            }
 
             h1 {
                 font-size: 20px;
@@ -390,15 +390,16 @@
                 padding: 10px 10px 36px;
             }
 
-            .header {
-                padding: 8px 10px;
-                margin: -10px -10px 10px -10px;
-            }
-
             .back-btn {
-                padding: 0.5rem;
+                padding: 8px 12px;
                 font-size: 12px;
                 margin-right: 6px;
+                gap: 4px;
+            }
+            
+            .back-btn svg {
+                width: 16px;
+                height: 16px;
             }
 
             .back-btn span {
@@ -453,23 +454,13 @@
 </head>
 <body>
     <div class="page">
-        <div class="header">
-            <div class="header-left">
-                <a href="#" class="back-btn" id="back-btn">
-                    <span>←</span> Back
-                </a>
-                <a href="/dashboard/" class="logo-link">
-                    {% load static %}
-                    <img class="logo-img" src="{% static 'images/logo.svg' %}" alt="Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div style="display: none; align-items: center; gap: 8px; font-weight: 700; font-size: 1.25rem; color: #8b5cf6;">
-                        <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #8b5cf6, #a855f7); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">M</div>
-                        <span>MedSol</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-        
         <div class="top-bar">
+            <a href="#" class="back-btn" id="back-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+                <span>Back</span>
+            </a>
             <div class="progress" id="progress-text">1<span>/1</span></div>
         </div>
 
@@ -510,6 +501,7 @@
     <script>
         const questionData = JSON.parse('{{ questions_json|escapejs }}');
         const title = '{{ test_title|default:"Practice Test" }}';
+        const isPastPaper = {{ is_past_paper|yesno:"true,false" }};
 
         const questionTextEl = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
@@ -524,7 +516,6 @@
         const questionCounter = document.getElementById('question-counter');
         const testTitle = document.getElementById('test-title');
 
-        let currentIndex = 0;
         let answered = false;
         let userAttempts = {}; // Store user attempts
 
@@ -537,6 +528,13 @@
                 };
             }
         });
+
+        // Find the first unattempted question, or start from beginning if all are attempted
+        let currentIndex = 0;
+        const firstUnattemptedIndex = questionData.findIndex(q => !q.selected || q.selected === '');
+        if (firstUnattemptedIndex !== -1) {
+            currentIndex = firstUnattemptedIndex;
+        }
 
         testTitle.textContent = title;
 
@@ -742,35 +740,9 @@
         if (reportIconEl) {
             reportIconEl.addEventListener('click', () => {
                 const currentQuestion = questionData[currentIndex];
-                if (confirm('Do you want to report this question?')) {
-                    reportQuestionToDB(currentQuestion.id);
-                }
-            });
-        }
-
-        function reportQuestionToDB(questionId) {
-            const formData = new FormData();
-            formData.append('question_id', questionId);
-            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-
-            fetch('/api/report-question/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Question reported. Thank you for your feedback!');
-                } else {
-                    alert('Failed to report question: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error reporting question:', error);
-                alert('An error occurred while reporting the question.');
+                const questionType = isPastPaper ? 'past_paper' : 'regular';
+                // Navigate to report page
+                window.location.href = `/report/${questionType}/${currentQuestion.id}/`;
             });
         }
 

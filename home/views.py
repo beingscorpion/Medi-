@@ -1,18 +1,17 @@
-from django.shortcuts import render , HttpResponse, redirect
-from django.core.exceptions import ValidationError
-from django.contrib import messages
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, HttpResponse, redirect
+# from django.core.exceptions import ValidationError  # Not used
+# from django.contrib import messages  # Not used (only in commented code)
+# from django.contrib.auth import authenticate, login  # Not used (only in commented code)
 from django.contrib.auth import logout as django_logout
 from django.http import JsonResponse
-from django.views.generic import TemplateView
+# from django.views.generic import TemplateView  # Not used (only in commented code)
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required 
-from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+# from django.utils.decorators import method_decorator  # Not used (only in commented code)
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from django.db.models import Count, Q
-from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats, Contact, Province, PastPaperYear, PastPaperQuestion, UserPastPaperAttempt
+# from django.db.models import Count, Q  # Not used
+from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats, Contact, Province, PastPaperYear, PastPaperQuestion, UserPastPaperAttempt, QuestionReport
 import json
 from django.contrib.admin.views.decorators import staff_member_required 
 
@@ -108,16 +107,23 @@ def dashboard_view(request):
     
     # Get user (or None if not authenticated)
     user = request.user if request.user.is_authenticated else None
-    
-    # Get all subjects
-    subjects = Subject.objects.all().order_by('name')
+
+    #Get all subjects
+    # subjects = Subject.objects.all().order_by('name')
+    # Get all subjects - only fetch name field
+    subjects = Subject.objects.only('name').order_by('name')
     
     # Prepare subject data with chapters and stats
     subjects_data = {}
     
     for subject in subjects:
-        # Get all chapters for this subject
-        chapters = Chapter.objects.filter(subject=subject).order_by('chapter_no')
+
+        # # Get all chapters for this subject
+        # chapters = Chapter.objects.filter(subject=subject).order_by('chapter_no')
+        # Get all chapters for this subject - only fetch needed fields
+        chapters = Chapter.objects.filter(subject=subject).only(
+            'chapter_no', 'title', 'description', 'slug', 'subject'
+        ).order_by('chapter_no')
         
         # Calculate subject-level stats
         total_questions = Question.objects.filter(chapter__subject=subject).count()
@@ -175,16 +181,23 @@ def dashboard_view(request):
                 'pending': pending
             }
         }
+    #      # Get all provinces for Past Papers
+    # provinces = Province.objects.all().order_by('name')
     
-    # Get all provinces for Past Papers
-    provinces = Province.objects.all().order_by('name')
+    # Get all provinces for Past Papers - only fetch name field
+    provinces = Province.objects.only('name').order_by('name')
     
     # Prepare province data with years and stats
     provinces_data = {}
     
     for province in provinces:
-        # Get all years for this province
-        years = PastPaperYear.objects.filter(province=province).order_by('-year')
+        #  Get all years for this province
+        # years = PastPaperYear.objects.filter(province=province).order_by('-year')
+
+        # Get all years for this province - only fetch needed fields
+        years = PastPaperYear.objects.filter(province=province).select_related('province').only(
+            'year', 'slug', 'province', 'province__name'
+        ).order_by('-year')
         
         # Calculate province-level stats
         total_questions = PastPaperQuestion.objects.filter(year__province=province).count()
@@ -252,7 +265,13 @@ def paper_selection_view(request, slug):
     """
     Paper type selection page - shows options for Past Papers, Subject Paper, Theory Paper
     """
-    chapter = Chapter.objects.get(slug=slug)
+    # chapter = Chapter.objects.get(slug=slug)
+    try:
+        # Only fetch needed fields from Chapter
+        chapter = Chapter.objects.only('title', 'description', 'slug').get(slug=slug)
+    except Chapter.DoesNotExist:
+        return HttpResponse("Chapter not found", status=404)
+    
     user = request.user if request.user.is_authenticated else None
     
     # Paper types mapping - using template-friendly keys
@@ -322,16 +341,28 @@ def mcq_view(request, slug, paper_type):
     # Get the mapped paper_type, default to the original if not found
     mapped_paper_type = paper_type_mapping.get(paper_type.lower(), paper_type)
     
-    # Filter questions by chapter slug and paper type
-    questions = Question.objects.filter(chapter__slug=slug, paper_type=mapped_paper_type)
+    # # Filter questions by chapter slug and paper type
+    # questions = Question.objects.filter(chapter__slug=slug, paper_type=mapped_paper_type)
+
+    # Filter questions by chapter slug and paper type - only fetch needed fields
+    questions = Question.objects.filter(
+        chapter__slug=slug, 
+        paper_type=mapped_paper_type
+    ).only('q_id', 'question', 'key1', 'key2', 'key3', 'key4', 'correct_text', 'explanation')
     
-    # Get user attempts if authenticated
+    # Get user attempts if authenticated - only fetch needed fields
     user_attempts = {}
     if request.user.is_authenticated:
         attempts = UserQuestionAttempt.objects.filter(
             user=request.user,
             question__in=questions
-        ).select_related('question')
+        ).select_related('question').only('selected_text', 'is_correct', 'question__q_id')
+        
+        #  UserQuestionAttempt.objects.filter(
+        #     user=request.user,
+        #     question__in=questions
+        # ).select_related('question')
+        
         for attempt in attempts:
             user_attempts[attempt.question.q_id] = {
                 'selected_text': attempt.selected_text,
@@ -456,22 +487,83 @@ def save_attempt(request):
 
 
 @login_required
+def report_question_page(request, question_id, question_type='regular'):
+    """
+    Display report page with question and description form.
+    question_type can be 'regular' or 'past_paper'
+    """
+    try:
+        if question_type == 'past_paper':
+            question = PastPaperQuestion.objects.get(ppq_id=question_id)
+            is_past_paper = True
+        else:
+            question = Question.objects.get(q_id=question_id)
+            is_past_paper = False
+        
+        # Get question options for display
+        options = []
+        if question.key1:
+            options.append({'key': '1', 'label': question.key1})
+        if question.key2:
+            options.append({'key': '2', 'label': question.key2})
+        if question.key3:
+            options.append({'key': '3', 'label': question.key3})
+        if question.key4:
+            options.append({'key': '4', 'label': question.key4})
+        
+        context = {
+            'question': question,
+            'question_text': question.question,
+            'options': options,
+            'question_id': question_id,
+            'question_type': question_type,
+            'is_past_paper': is_past_paper,
+        }
+        
+        return render(request, 'report.html', context)
+    except (Question.DoesNotExist, PastPaperQuestion.DoesNotExist):
+        return HttpResponse("Question not found", status=404)
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}", status=500)
+
+
+@login_required
 @require_http_methods(["POST"])
-@csrf_exempt
 def report_question(request):
-    """Report a question"""
+    """Handle report form submission"""
     try:
         question_id = request.POST.get('question_id')
+        question_type = request.POST.get('question_type', 'regular')
+        description = request.POST.get('description', '').strip()
         
         if not question_id:
             return JsonResponse({'success': False, 'error': 'Missing question_id'}, status=400)
         
-        question = Question.objects.get(q_id=question_id)
-        question.report = True
-        question.save()
+        if not description:
+            return JsonResponse({'success': False, 'error': 'Please provide a description of the issue'}, status=400)
         
-        return JsonResponse({'success': True, 'message': 'Question reported successfully'})
-    except Question.DoesNotExist:
+        question_obj = None
+        past_paper_question_obj = None
+        
+        if question_type == 'past_paper':
+            past_paper_question_obj = PastPaperQuestion.objects.get(ppq_id=question_id)
+            past_paper_question_obj.report = True
+            past_paper_question_obj.save()
+        else:
+            question_obj = Question.objects.get(q_id=question_id)
+            question_obj.report = True
+            question_obj.save()
+        
+        # Create report with description
+        QuestionReport.objects.create(
+            user=request.user,
+            question=question_obj,
+            past_paper_question=past_paper_question_obj,
+            description=description
+        )
+        
+        return JsonResponse({'success': True, 'message': 'Question reported successfully. Thank you for your feedback!'})
+    except (Question.DoesNotExist, PastPaperQuestion.DoesNotExist):
         return JsonResponse({'success': False, 'error': 'Question not found'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
@@ -576,22 +668,29 @@ def past_paper_mcq_view(request, slug):
     """
     Past Paper MCQ page. Accepts year slug to load appropriate questions.
     """
-    # Get the year by slug
-    try:
-        year = PastPaperYear.objects.get(slug=slug)
+    # Get the year by slug - only fetch needed fields including province name for template
+    try:   #year = PastPaperYear.objects.get(slug=slug)
+        year = PastPaperYear.objects.select_related('province').only(
+            'year', 'slug', 'province', 'province__name'
+        ).get(slug=slug)
     except PastPaperYear.DoesNotExist:
         return HttpResponse("Year not found", status=404)
     
-    # Filter questions by year
-    questions = PastPaperQuestion.objects.filter(year=year)
+#  # Filter questions by year
+#     questions = PastPaperQuestion.objects.filter(year=year)
+
+    # Filter questions by year - only fetch needed fields
+    questions = PastPaperQuestion.objects.filter(year=year).only(
+        'ppq_id', 'question', 'key1', 'key2', 'key3', 'key4', 'correct_text', 'explanation'
+    )
     
-    # Get user attempts if authenticated
+    # Get user attempts if authenticated - only fetch needed fields
     user_attempts = {}
     if request.user.is_authenticated:
         attempts = UserPastPaperAttempt.objects.filter(
             user=request.user,
             question__in=questions
-        ).select_related('question')
+        ).select_related('question').only('selected_text', 'is_correct', 'question__ppq_id')
         for attempt in attempts:
             user_attempts[attempt.question.ppq_id] = {
                 'selected_text': attempt.selected_text,

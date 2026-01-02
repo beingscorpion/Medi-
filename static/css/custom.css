@@ -126,7 +126,7 @@
   width: 20px;
   height: 20px;
 }
-.divider {
+/* .divider {
   text-align: center;
   margin: 24px 0;
   position: relative;
@@ -147,8 +147,8 @@
   padding: 0 16px;
   position: relative;
   z-index: 1;
-}
-.login-form {
+} */
+/* .login-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -207,7 +207,7 @@
 }
 .signup-link:hover {
   text-decoration: underline;
-}
+} */
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
@@ -317,5 +317,30 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* FAQ Accordion Styles - Smooth animations */
+button[onclick*="toggleFAQ"] + div {
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-in-out, margin-top 0.2s ease-in-out;
+}
+
+button[onclick*="toggleFAQ"] + div.hidden {
+  max-height: 0 !important;
+  opacity: 0;
+  margin-top: 0;
+}
+
+/* Smooth icon rotation and color transition for FAQ */
+button[onclick*="toggleFAQ"] svg {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease-in-out;
+}
+
+button[onclick*="toggleFAQ"] svg.rotate-180 {
+  transform: rotate(180deg);
+}
+
+button[onclick*="toggleFAQ"]:hover svg {
+  color: #8b5cf6;
 }
 

@@ -4,7 +4,7 @@
      <meta charset="UTF-8">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>Dashboard</title>
-    {% comment %} {% load static %} {% endcomment %}
+    {% load static %}
     {% comment %} <link href="{% static 'css/tailwind.css' %}" rel="stylesheet"> {% endcomment %}
     {% comment %} <link href="{% static 'css/custom.css' %}" rel="stylesheet"> {% endcomment %}
      <style>
@@ -50,13 +50,7 @@
          .logo-icon {
              width: 32px;
              height: 32px;
-             background: linear-gradient(135deg, #8b5cf6, #a855f7);
-             border-radius: 6px;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             color: white;
-             font-weight: bold;
+             object-fit: contain;
          }
  
          .main {
@@ -427,8 +421,8 @@
             }
 
             .logo-icon {
-                width: 28px;
-                height: 28px;
+                width: 40px;
+                height: 40px;
             }
 
             .menu-toggle {
@@ -570,6 +564,11 @@
                 padding: 0 0.75rem;
             }
 
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+            }
+
             .logo span {
                 display: none;
             }
@@ -605,7 +604,7 @@
             <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
             <a href="{% url 'index' %}" style="text-decoration: none; color: inherit;">
                 <div class="logo">
-                    <div class="logo-icon">Q</div>
+                    <img class="logo-icon" src="{% static 'images/logo.svg' %}" alt="MedSol">
                     <span>MedSol</span>
                 </div>
             </a>
@@ -1027,14 +1026,11 @@
             });
 
             // Logout button
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to logout?')) {
-                        window.location.href = '{% url 'logout' %}';
-                    }
-                });
-            }
+            document.getElementById('logoutBtn')?.addEventListener('click', function() {
+                this.textContent = 'Logging out...';
+                this.disabled = true;
+                window.location.href = '{% url 'logout' %}';
+            });
         });
     </script>
  </body>

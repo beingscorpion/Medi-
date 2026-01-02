@@ -19,10 +19,6 @@
             background: #f8fafc;
             color: #1e293b;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             padding: 2rem;
             position: relative;
         }
@@ -31,6 +27,7 @@
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
+            position: relative;
         }
 
         .header {
@@ -39,25 +36,49 @@
         }
 
         .back-btn {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
             cursor: pointer;
-            color: #64748b;
+            color: white;
             text-decoration: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+            overflow: hidden;
+            margin-bottom: 2rem;
         }
-
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        .back-btn:hover::before {
+            left: 100%;
+        }
         .back-btn:hover {
-            background: #f1f5f9;
-            color: #1e293b;
+            background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35);
+        }
+        .back-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(139, 92, 246, 0.3);
+        }
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2.5;
         }
 
         .header h1 {
@@ -156,11 +177,11 @@
             }
 
             .back-btn:hover {
-                background: white;
+                transform: translateY(-1px);
             }
 
             .back-btn:active {
-                background: #f1f5f9;
+                transform: translateY(0);
             }
         }
 
@@ -254,17 +275,11 @@
         @media (max-width: 968px) {
             body {
                 padding: 1rem;
-                align-items: flex-start;
                 min-height: 100vh;
             }
 
             .back-btn {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin-bottom: 1rem;
-                align-self: flex-start;
-                width: auto;
+                margin-bottom: 1.5rem;
             }
 
             .container {
@@ -327,8 +342,15 @@
             }
 
             .back-btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
+                padding: 10px 16px;
+                font-size: 14px;
+                gap: 8px;
+                margin-bottom: 1.5rem;
+            }
+            
+            .back-btn svg {
+                width: 18px;
+                height: 18px;
             }
 
             .header h1 {
@@ -396,8 +418,15 @@
             }
 
             .back-btn {
-                padding: 0.5rem;
-                font-size: 0.8125rem;
+                padding: 8px 14px;
+                font-size: 13px;
+                gap: 6px;
+                margin-bottom: 1rem;
+            }
+            
+            .back-btn svg {
+                width: 16px;
+                height: 16px;
             }
 
             .back-btn span {
@@ -463,11 +492,13 @@
     </style>
 </head>
 <body>
-    <a href="/dashboard/" class="back-btn">
-        Back to Dashboard
-    </a>
-
     <div class="container">
+        <a href="/dashboard/" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span>Back to Dashboard</span>
+        </a>
         <div class="header">
             <h1>Select Question Type</h1>
             <p>Choose the type of questions you want to practice</p>

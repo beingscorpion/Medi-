@@ -246,3 +246,24 @@ class UserPastPaperAttempt(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.question}"
+
+class QuestionReport(models.Model):
+    """Store detailed reports about questions with descriptions"""
+    r_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='question_reports')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='reports', null=True, blank=True)
+    past_paper_question = models.ForeignKey(PastPaperQuestion, on_delete=models.CASCADE, related_name='reports', null=True, blank=True)
+    description = models.TextField(help_text="Description of the issue with this question")
+    created_at = models.DateTimeField(auto_now_add=True)
+    resolved = models.BooleanField(default=False)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['question']),
+            models.Index(fields=['past_paper_question']),
+        ]
+    
+    def __str__(self):
+        question_ref = self.question if self.question else self.past_paper_question
+        return f"Report by {self.user.username} - {question_ref}"

@@ -12,21 +12,28 @@
             <!-- Left Content -->
             <div class="text-center lg:text-left">
                 <h1 class="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                    Passing exams and certifications 
+                    Welcome to Medsol 
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
-                        and tests has never been so easy
+                        all in one platform for mdcat pration
                     </span>
                 </h1>
                 <p class="mt-6 text-xl text-gray-600 max-w-2xl">
-                    Streamline your examination process with our comprehensive platform designed for modern businesses and educational institutions.
+                    Getting into your dream medical college has now become more easier with medsol
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                        Register for demo
+                    {% if user.is_authenticated %}
+                    {% comment %} <a href="/dashboard/" > <button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-lg text-sm font-medium transition-colors">Get Started</button></a> {% endcomment %}
+                    <a href="/dashboard/" ><button class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        Get Started
+                    </a>
+                    {% else %}
+                    <button onclick="openLogin()" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        Get Started
                     </button>
-                    <button class="border-2 border-gray-300 hover:border-purple-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 bg-white hover:bg-purple-50">
+                    {% endif %}
+                    {% comment %} <button class="border-2 border-gray-300 hover:border-purple-300 text-gray-700 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 bg-white hover:bg-purple-50">
                         Watch tutorial
-                    </button>
+                    </button> {% endcomment %}
                 </div>
             </div>
 
@@ -76,7 +83,7 @@
 <section id="Features" class="py-20 bg-white" class="scroll-mt-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">For Your Business</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">For Your Preparation</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                 Comprehensive solutions designed to meet your organization's examination and certification needs
             </p>
@@ -90,9 +97,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Share your insights</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Chapter Wise MCQS</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Get detailed analytics and insights about candidate performance, exam effectiveness, and learning outcomes.
+                    Medsol provides relatable of each chapter, which makes the concept more clear and easy.
                 </p>
             </div>
 
@@ -103,9 +110,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C20.832 18.477 19.246 18 17.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Create new tests</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Past Papers</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Build comprehensive tests and examinations with our intuitive question builder and assessment tools.
+                    Past papers is a key to ace mdcat. Medsol has gathered all the past papers in one place with accurate explanation.
                 </p>
             </div>
 
@@ -116,9 +123,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">QA Office Setup</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Book Line MCQS</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Establish quality assurance processes and maintain examination standards with our compliance tools.
+                    Book lines in biology, tidbits from physics and chemistry, and mcqs of own text book always have a high chance in mdcat paper therefore medsol has gathered all these in one place for you.
                 </p>
             </div>
 
@@ -129,9 +136,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Know before hand</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Tests</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Get predictive insights and early warning systems to identify at-risk candidates and optimize outcomes.
+                    Medsol provides mock test of mdcat standard making your mdcat journey more easy.
                 </p>
             </div>
 
@@ -142,9 +149,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Improve student strategies</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Guidance With Toppers</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Help students develop better learning strategies with personalized recommendations and progress tracking.
+                    Medsol team members are toppers of mdcat and when you join our platform you get direct interactions with toppers and they guide you directly.
                 </p>
             </div>
 
@@ -155,9 +162,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">Over 150 Courses</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Mock Tests</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    Access a comprehensive library of pre-built courses and examinations across various subjects and industries.
+                    Medsol provides mock test of mdcat standard making your mdcat journey more easy.
                 </p>
             </div>
         </div>
@@ -168,42 +175,36 @@
 <section id="WhyUs" class="py-20 bg-pruple-50 " class="scroll-mt-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-900 mb-4">Trusted Companies from around the world</h2>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Your Path to Top Medical Colleges</h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Helping organizations optimize their examination and certification processes across industries and sectors
+                MedSol helps thousands of students prepare for MDCAT and secure admission into their dream medical colleges across Pakistan
             </p>
         </div>
 
         <!-- Company Logos Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center justify-items-center opacity-60 hover:opacity-80 transition-opacity duration-300">
+        <div class="grid grid-cols-3 md:grid-cols-1 lg:grid-cols-7 gap-6 items-center justify-items-center opacity-60 hover:opacity-80 transition-opacity duration-300">
             <!-- Row 1 -->
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-blue-600 rounded"></div>
+                <img src="{% static 'images/bolan.png' %}" alt="Bolan" class="max-w-full max-h-full object-contain">
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-red-500 rounded"></div>
+                <img src="{% static 'images/Duhs.png' %}" alt="DUHS" class="max-w-full max-h-full object-contain">
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-green-500 rounded"></div>
+                <img src="{% static 'images/kmu.png' %}" alt="KMU" class="max-w-full max-h-full object-contain">
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-purple-500 rounded"></div>
+                <img src="{% static 'images/pmdc.png' %}" alt="PMDC" class="max-w-full max-h-full object-contain">
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-yellow-500 rounded"></div>
+                <img src="{% static 'images/SZAMBU.png' %}" alt="SZAMBU" class="max-w-full max-h-full object-contain">
             </div>
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-indigo-500 rounded"></div>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-pink-500 rounded"></div>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
-                <div class="w-12 h-8 bg-orange-500 rounded"></div>
+                <img src="{% static 'images/uhs.png' %}" alt="UHS" class="max-w-full max-h-full object-contain">
             </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center justify-items-center opacity-60 hover:opacity-80 transition-opacity duration-300 mt-8">
+        {% comment %} <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-8 items-center justify-items-center opacity-60 hover:opacity-80 transition-opacity duration-300 mt-8">
             <!-- Row 2 -->
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
                 <div class="w-12 h-8 bg-teal-500 rounded"></div>
@@ -229,7 +230,7 @@
             <div class="bg-white p-4 rounded-lg shadow-sm w-20 h-16 flex items-center justify-center">
                 <div class="w-12 h-8 bg-slate-500 rounded"></div>
             </div>
-        </div>
+        </div> {% endcomment %}
     </div>
 </section>
 
@@ -402,20 +403,6 @@
   </div>
 </section>
 
-{% comment %} <script>
-function toggleFAQ(btn) {
-  const content = btn.nextElementSibling;
-  const circle = btn.querySelector(".faq-circle");
-
-  content.classList.toggle("hidden");
-
-  if (content.classList.contains("hidden")) {
-    circle.textContent = "+";
-  } else {
-    circle.textContent = "−"; // minus symbol
-  }
-}
-</script> {% endcomment %}
 {% endblock %}
            
 {% comment %} {% extends "base.html" %}
@@ -429,3 +416,4 @@ Hello this is nww
 
 
  {% endcomment %}
+ 
