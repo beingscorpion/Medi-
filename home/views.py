@@ -11,9 +11,35 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 # from django.db.models import Count, Q  # Not used
-from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats, Contact, Province, PastPaperYear, PastPaperQuestion, UserPastPaperAttempt, QuestionReport
+from home.models import Subject, Chapter, Question, UserQuestionAttempt, UserChapterStats, Contact, Province, PastPaperYear, PastPaperQuestion, UserPastPaperAttempt, QuestionReport, Payment, ReferralCode
 import json
 from django.contrib.admin.views.decorators import staff_member_required 
+from django.contrib import messages
+from functools import wraps
+
+
+# Helper function to check if user has confirmed payment
+def has_confirmed_payment(user):
+    """Check if user has a confirmed payment"""
+    return Payment.objects.filter(user=user, confirmed=True).exists()
+
+
+# Decorator to require confirmed payment
+def payment_required(view_func):
+    """Decorator that checks if user has confirmed payment before allowing access"""
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        # Ensure user is authenticated (safety check, though @login_required should handle this)
+        if not request.user.is_authenticated:
+            from django.contrib.auth.decorators import login_required
+            return login_required(view_func)(request, *args, **kwargs)
+        
+        # Check payment status
+        if not has_confirmed_payment(request.user):
+            messages.warning(request, 'Please complete your payment to access this feature. Your payment needs to be confirmed before you can use our services.')
+            return redirect('payment')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 
 # Create your views here.
@@ -251,16 +277,23 @@ def dashboard_view(request):
             }
         }
     
+    # Check payment status
+    payment_confirmed = has_confirmed_payment(request.user) if request.user.is_authenticated else False
+    pending_payment = Payment.objects.filter(user=request.user, confirmed=False).exists() if request.user.is_authenticated else False
+    
     context = {
         'subjects_data': subjects_data,
         'provinces_data': provinces_data,
-        'user': user
+        'user': user,
+        'payment_confirmed': payment_confirmed,
+        'pending_payment': pending_payment,
     }
     
     return render(request, 'dashboard/dashboard.html', context)
 
 
 @login_required
+@payment_required
 def paper_selection_view(request, slug):
     """
     Paper type selection page - shows options for Past Papers, Subject Paper, Theory Paper
@@ -326,6 +359,7 @@ def paper_selection_view(request, slug):
 
 
 @login_required
+@payment_required
 def mcq_view(request, slug, paper_type):
     """
     MCQ page. Accepts chapter slug and paper type to load appropriate questions.
@@ -423,8 +457,8 @@ def mcq_view(request, slug, paper_type):
 
 
 @login_required
+@payment_required
 @require_http_methods(["POST"])
-@csrf_exempt
 def save_attempt(request):
     """Save user's answer attempt to database"""
     try:
@@ -435,6 +469,11 @@ def save_attempt(request):
             return JsonResponse({'success': False, 'error': 'Missing required fields'}, status=400)
         
         question = Question.objects.get(q_id=question_id)
+        
+        # Validate that selected_text is one of the valid options
+        valid_options = [opt for opt in [question.key1, question.key2, question.key3, question.key4] if opt]
+        if selected_text not in valid_options:
+            return JsonResponse({'success': False, 'error': 'Invalid answer option'}, status=400)
         
         # Determine if answer is correct
         is_correct = False
@@ -487,6 +526,7 @@ def save_attempt(request):
 
 
 @login_required
+@payment_required
 def report_question_page(request, question_id, question_type='regular'):
     """
     Display report page with question and description form.
@@ -528,6 +568,7 @@ def report_question_page(request, question_id, question_type='regular'):
 
 
 @login_required
+@payment_required
 @require_http_methods(["POST"])
 def report_question(request):
     """Handle report form submission"""
@@ -664,6 +705,7 @@ def report_question(request):
 #         }, status=500)
 
 @login_required
+@payment_required
 def past_paper_mcq_view(request, slug):
     """
     Past Paper MCQ page. Accepts year slug to load appropriate questions.
@@ -751,8 +793,8 @@ def past_paper_mcq_view(request, slug):
 
 
 @login_required
+@payment_required
 @require_http_methods(["POST"])
-@csrf_exempt
 def save_past_paper_attempt(request):
     """Save user's past paper answer attempt to database"""
     try:
@@ -763,6 +805,11 @@ def save_past_paper_attempt(request):
             return JsonResponse({'success': False, 'error': 'Missing required fields'}, status=400)
         
         question = PastPaperQuestion.objects.get(ppq_id=question_id)
+        
+        # Validate that selected_text is one of the valid options
+        valid_options = [opt for opt in [question.key1, question.key2, question.key3, question.key4] if opt]
+        if selected_text not in valid_options:
+            return JsonResponse({'success': False, 'error': 'Invalid answer option'}, status=400)
         
         # Determine if answer is correct
         is_correct = False
@@ -815,6 +862,139 @@ def logout_view(request):
 
 def socialaccount_login_cancelled(request):
     return redirect('/')
+
+
+@login_required
+def payment_view(request, coupon_code=None):
+    """Payment page where users can submit payment details and screenshot"""
+    
+    # Account details - you can customize these
+    account_details = {
+        'bank_name': 'Your Bank Name',
+        'account_title': 'Medsol Account',
+        'account_number': '1234567890123456',
+        'iban': 'PK00XXXX1234567890123456',
+        'jazzcash_number': '03001234567',
+        'easypaisa_number': '03001234567',
+    }
+    
+    # Check if user already has a confirmed payment
+    existing_payment = Payment.objects.filter(user=request.user, confirmed=True).first()
+    
+    # Check if user has any pending payment (not confirmed, not rejected)
+    pending_payment = Payment.objects.filter(user=request.user, confirmed=False).first()
+    
+    # Fixed payment amount
+    FIXED_AMOUNT = 3000.00
+    
+    # Pre-fill referral code from URL if provided
+    pre_filled_code = None
+    coupon_code_valid = None
+    coupon_code_error = None
+    if coupon_code:
+        # Validate that the coupon code exists and is active
+        try:
+            referral_code_obj = ReferralCode.objects.get(code=coupon_code.upper(), is_active=True)
+            pre_filled_code = referral_code_obj.code
+            coupon_code_valid = True
+        except ReferralCode.DoesNotExist:
+            # Code doesn't exist - show error
+            pre_filled_code = coupon_code.upper()
+            coupon_code_valid = False
+            coupon_code_error = f"Invalid or inactive referral code: {coupon_code.upper()}. Please check the code and try again."
+            messages.error(request, coupon_code_error)
+    
+    if request.method == 'POST':
+        # Check if user already has a pending payment
+        if pending_payment:
+            messages.error(request, 'You already have a pending payment. Please wait for it to be confirmed or rejected before submitting a new payment.')
+            return render(request, 'payment.html', {
+                'account_details': account_details, 
+                'existing_payment': existing_payment,
+                'pending_payment': pending_payment,
+                'fixed_amount': FIXED_AMOUNT,
+                'pre_filled_code': pre_filled_code,
+                'coupon_code_valid': coupon_code_valid,
+                'coupon_code_error': coupon_code_error,
+            })
+        
+        # Amount is fixed, ignore form input
+        amount = FIXED_AMOUNT
+        transaction_id = request.POST.get('transaction_id', '').strip()
+        payment_method = request.POST.get('payment_method', '').strip()
+        referral_code_text = request.POST.get('referral_code', '').strip()
+        additional_details = request.POST.get('additional_details', '').strip()
+        payment_screenshot = request.FILES.get('payment_screenshot')
+        
+        # Validation - payment screenshot is required
+        if not payment_screenshot:
+            messages.error(request, 'Payment screenshot is required')
+            return render(request, 'payment.html', {
+                'account_details': account_details, 
+                'existing_payment': existing_payment,
+                'pending_payment': pending_payment,
+                'fixed_amount': FIXED_AMOUNT,
+                'pre_filled_code': pre_filled_code,
+                'coupon_code_valid': coupon_code_valid,
+                'coupon_code_error': coupon_code_error,
+            })
+        
+        # Handle referral code
+        referral_code_obj = None
+        referrer = None
+        if referral_code_text:
+            try:
+                referral_code_obj = ReferralCode.objects.get(code=referral_code_text.upper(), is_active=True)
+                referrer = referral_code_obj.user
+                # Don't allow users to use their own referral code
+                if referrer == request.user:
+                    messages.error(request, 'You cannot use your own referral code')
+                    return render(request, 'payment.html', {
+                        'account_details': account_details, 
+                        'existing_payment': existing_payment,
+                        'fixed_amount': FIXED_AMOUNT,
+                        'pre_filled_code': referral_code_text.upper(),
+                        'coupon_code_valid': False,
+                        'coupon_code_error': 'You cannot use your own referral code'
+                    })
+            except ReferralCode.DoesNotExist:
+                messages.error(request, f'Invalid or inactive referral code: {referral_code_text.upper()}. Please check the code and try again.')
+                return render(request, 'payment.html', {
+                    'account_details': account_details, 
+                    'existing_payment': existing_payment,
+                    'fixed_amount': FIXED_AMOUNT,
+                    'pre_filled_code': referral_code_text.upper(),
+                    'coupon_code_valid': False,
+                    'coupon_code_error': f'Invalid or inactive referral code: {referral_code_text.upper()}. Please check the code and try again.'
+                })
+        
+        # Create payment
+        payment = Payment.objects.create(
+            user=request.user,
+            amount=amount,
+            transaction_id=transaction_id,
+            payment_method=payment_method,
+            payment_screenshot=payment_screenshot,
+            additional_details=additional_details,
+            referral_code=referral_code_obj,
+            referrer=referrer,
+        )
+        
+        # Note: total_uses will be incremented when payment is confirmed (in Payment model save method)
+        
+        messages.success(request, 'Payment submitted successfully! We will verify your payment and confirm it soon.')
+        return redirect('payment')
+    
+    context = {
+        'account_details': account_details,
+        'existing_payment': existing_payment,
+        'pending_payment': pending_payment,
+        'fixed_amount': FIXED_AMOUNT,
+        'pre_filled_code': pre_filled_code,
+        'coupon_code_valid': coupon_code_valid,
+        'coupon_code_error': coupon_code_error,
+    }
+    return render(request, 'payment.html', context)
 
 
 

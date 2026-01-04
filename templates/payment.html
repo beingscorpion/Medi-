@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment - MedSol{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+    <div class="max-w-4xl mx-auto w-full">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2 break-words">Complete Your Payment</h1>
+            <p class="text-xl text-gray-600 break-words">Submit your payment details to get started</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-6 w-full">
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <div class="bg-red-500 border border-red-600 text-white px-4 py-3 rounded-lg mb-4 break-words w-full">
+                {{ message }}
+            </div>
+            {% elif 'Successfully signed in' not in message|stringformat:"s" %}
+            <div class="bg-green-500 border border-green-600 text-white px-4 py-3 rounded-lg mb-4 break-words w-full">
+                {{ message }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Already Paid Notice -->
+        {% if existing_payment %}
+        <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-8 w-full overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
+                <svg class="w-6 h-6 text-green-600 sm:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-green-900 break-words">Payment Confirmed!</h3>
+                    <p class="text-green-700 break-words">Your payment of Rs. {{ existing_payment.amount }} has been confirmed. You have full access to the platform.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pending Payment Notice -->
+        {% if pending_payment and not existing_payment %}
+        <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
+                <div style="font-size: 1.5rem;">⏳</div>
+                <div class="flex-1">
+                    <h3 style="font-weight: 600; margin-bottom: 0.25rem; font-size: 1.125rem; color: white;">Payment Pending Verification</h3>
+                    <p style="font-size: 0.875rem; opacity: 0.95; margin: 0; color: white;">You have already submitted a payment of Rs. {{ pending_payment.amount }} on {{ pending_payment.created_at|date:"F d, Y" }}. Please wait for it to be confirmed or rejected before submitting a new payment.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+            <!-- Account Details Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 w-full overflow-hidden">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 break-words">Account Details</h2>
+                <div class="space-y-4">
+                    <div class="border-b border-gray-200 pb-4">
+                        <p class="text-sm text-gray-500 mb-1">Bank Name</p>
+                        <p class="text-lg font-semibold text-gray-900 break-words">{{ account_details.bank_name }}</p>
+                    </div>
+                    <div class="border-b border-gray-200 pb-4">
+                        <p class="text-sm text-gray-500 mb-1">Account Title</p>
+                        <p class="text-lg font-semibold text-gray-900 break-words">{{ account_details.account_title }}</p>
+                    </div>
+                    <div class="border-b border-gray-200 pb-4">
+                        <p class="text-sm text-gray-500 mb-1">Account Number</p>
+                        <p class="text-lg font-semibold text-gray-900 font-mono break-all">{{ account_details.account_number }}</p>
+                    </div>
+                    <div class="border-b border-gray-200 pb-4">
+                        <p class="text-sm text-gray-500 mb-1">IBAN</p>
+                        <p class="text-lg font-semibold text-gray-900 font-mono break-all">{{ account_details.iban }}</p>
+                    </div>
+                    <div class="pt-4">
+                        <p class="text-sm font-semibold text-gray-700 mb-3 break-words">Mobile Payment Options:</p>
+                        <div class="space-y-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-purple-50 p-3 rounded-lg gap-2 sm:gap-0">
+                                <span class="text-gray-700 font-medium">JazzCash</span>
+                                <span class="text-gray-900 font-mono font-semibold break-all">{{ account_details.jazzcash_number }}</span>
+                            </div>
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-blue-50 p-3 rounded-lg gap-2 sm:gap-0">
+                                <span class="text-gray-700 font-medium">EasyPaisa</span>
+                                <span class="text-gray-900 font-mono font-semibold break-all">{{ account_details.easypaisa_number }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 w-full overflow-hidden {% if pending_payment and not existing_payment %}opacity-60{% endif %}">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 break-words">Payment Information</h2>
+                <form method="POST" enctype="multipart/form-data" class="space-y-6" {% if pending_payment and not existing_payment %}onsubmit="event.preventDefault(); alert('You already have a pending payment. Please wait for it to be confirmed or rejected.'); return false;"{% endif %}>
+                    {% csrf_token %}
+                    
+                    <!-- Amount (Fixed) -->
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-700 mb-2 break-words">
+                            Amount (Rs.) <span class="text-red-500">*</span>
+                        </label>
+                        <div class="w-full px-4 py-3 bg-gray-50 border-2 border-purple-200 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+                            <span class="text-lg font-bold text-purple-600">Rs. {{ fixed_amount|floatformat:0 }}</span>
+                            <span class="text-sm text-gray-500">Fixed Amount</span>
+                        </div>
+                        <input type="hidden" name="amount" value="{{ fixed_amount }}">
+                        <p class="mt-2 text-sm text-gray-500 break-words">This is a fixed payment amount for full access to all services.</p>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div>
+                        <label for="payment_method" class="block text-sm font-medium text-gray-700 mb-2 break-words">
+                            Payment Method <span class="text-red-500">*</span>
+                        </label>
+                        <select id="payment_method" 
+                                name="payment_method" 
+                                required
+                                {% if pending_payment and not existing_payment %}disabled{% endif %}
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white {% if pending_payment and not existing_payment %}opacity-50 cursor-not-allowed{% endif %}">
+                            <option value="">Select payment method</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="JazzCash">JazzCash</option>
+                            <option value="EasyPaisa">EasyPaisa</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Transaction ID -->
+                    <div>
+                        <label for="transaction_id" class="block text-sm font-medium text-gray-700 mb-2 break-words">
+                            Transaction ID / Reference Number
+                        </label>
+                        <input type="text" 
+                               id="transaction_id" 
+                               name="transaction_id" 
+                               {% if pending_payment and not existing_payment %}disabled{% endif %}
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white {% if pending_payment and not existing_payment %}opacity-50 cursor-not-allowed{% endif %}"
+                               placeholder="Enter transaction ID if available">
+                    </div>
+
+                    <!-- Referral Code -->
+                    <div>
+                        <label for="referral_code" class="block text-sm font-medium text-gray-700 mb-2 break-words">
+                            Referral / Coupon Code (Optional)
+                        </label>
+                        <input type="text" 
+                               id="referral_code" 
+                               name="referral_code" 
+                               value="{% if pre_filled_code %}{{ pre_filled_code }}{% endif %}"
+                               class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 {% if coupon_code_valid == True %}bg-purple-50 border-purple-300{% elif coupon_code_valid == False %}bg-red-50 border-red-300{% else %}bg-white border-gray-300{% endif %} {% if pending_payment and not existing_payment %}opacity-50 cursor-not-allowed{% endif %}"
+                               placeholder="Enter referral code"
+                               {% if coupon_code_valid == True or pending_payment and not existing_payment %}readonly{% endif %}
+                               {% if pending_payment and not existing_payment %}disabled{% endif %}>
+                        {% if coupon_code_valid == True %}
+                        <p class="mt-2 text-sm text-purple-600 font-medium break-words">✓ Referral code applied from link</p>
+                        {% elif coupon_code_valid == False %}
+                        <p class="mt-2 text-sm text-red-600 font-medium break-words">✗ {{ coupon_code_error|default:"Invalid or inactive referral code. Please check the code and try again." }}</p>
+                        {% else %}
+                        <p class="mt-2 text-sm text-gray-500 break-words">If you have a referral code, enter it here. The referrer will get 5% commission.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Payment Screenshot -->
+                    <div>
+                        <label for="payment_screenshot" class="block text-sm font-medium text-gray-700 mb-2 break-words">
+                            Payment Screenshot <span class="text-red-500">*</span>
+                        </label>
+                        <input type="file" 
+                               id="payment_screenshot" 
+                               name="payment_screenshot" 
+                               accept="image/*" 
+                               required
+                               {% if pending_payment and not existing_payment %}disabled{% endif %}
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white {% if pending_payment and not existing_payment %}opacity-50 cursor-not-allowed{% endif %}"
+                               onchange="previewImage(this)">
+                        <p class="mt-2 text-sm text-gray-500 break-words">Upload a screenshot or photo of your payment receipt/confirmation</p>
+                        <!-- Image Preview -->
+                        <div id="image_preview_container" class="mt-4 hidden">
+                            <div class="border-2 border-purple-200 rounded-lg p-4 bg-gray-50">
+                                <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                                <div class="relative">
+                                    <img id="image_preview" src="" alt="Payment screenshot preview" class="max-w-full h-auto rounded-lg border border-gray-300 shadow-sm">
+                                    <button type="button" onclick="removePreview()" class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 shadow-lg transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p id="image_filename" class="mt-2 text-sm text-gray-600 font-mono break-all"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Details -->
+                    <div>
+                        <label for="additional_details" class="block text-sm font-medium text-gray-700 mb-2 break-words">
+                            Additional Details (Optional)
+                        </label>
+                        <textarea id="additional_details" 
+                                  name="additional_details" 
+                                  rows="4" 
+                                  {% if pending_payment and not existing_payment %}disabled{% endif %}
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white {% if pending_payment and not existing_payment %}opacity-50 cursor-not-allowed{% endif %}"
+                                  placeholder="Any additional information about your payment..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 {% if pending_payment and not existing_payment %}opacity-50 cursor-not-allowed{% endif %}"
+                            {% if pending_payment and not existing_payment %}disabled{% endif %}>
+                        {% if pending_payment and not existing_payment %}Payment Already Submitted{% else %}Submit Payment{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="mt-8 bg-gradient-to-br from-purple-50 via-pink-50 to-violet-50 border-2 border-purple-300 rounded-2xl p-8 shadow-xl w-full overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-0">
+                <div class="flex-shrink-0">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-500 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-7 h-7 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="sm:ml-5 flex-1 w-full">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center text-gray-800 break-words">
+                        Important Information
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start group">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <div class="w-6 h-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-200 shadow-sm">
+                                    <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="ml-3 text-gray-800 text-base leading-relaxed font-medium break-words">Please make sure the payment screenshot is clear and readable</span>
+                        </li>
+                        <li class="flex items-start group">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <div class="w-6 h-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-200 shadow-sm">
+                                    <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="ml-3 text-gray-800 text-base leading-relaxed font-medium break-words">Your payment will be manually verified by our team</span>
+                        </li>
+                        <li class="flex items-start group">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <div class="w-6 h-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-200 shadow-sm">
+                                    <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="ml-3 text-gray-800 text-base leading-relaxed font-medium break-words">You will receive access once your payment is confirmed</span>
+                        </li>
+                        <li class="flex items-start group">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <div class="w-6 h-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-200 shadow-sm">
+                                    <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="ml-3 text-gray-800 text-base leading-relaxed font-medium break-words">If you used a referral code, the referrer will receive 5% commission after payment confirmation</span>
+                        </li>
+                        <li class="flex items-start group">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <div class="w-6 h-6 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-all duration-200 shadow-sm">
+                                    <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <span class="ml-3 text-gray-800 text-base leading-relaxed font-medium break-words">For any issues, please contact our support team</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

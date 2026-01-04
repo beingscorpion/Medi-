@@ -38,6 +38,8 @@ urlpatterns = [
     path('api/report-question/', views.report_question, name='report_question'),
     
     path('logout', views.logout_view, name='logout'),
+    path('payment/<str:coupon_code>/', views.payment_view, name='payment_with_coupon'),
+    path('payment/', views.payment_view, name='payment'),
     # path('login/', views.login.as_view(), name='login'),
     # path('login/', views.login_view, name='login')
     path('accounts/', include('allauth.urls')),

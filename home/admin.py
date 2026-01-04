@@ -2,6 +2,7 @@ from django.contrib import admin
 from home.models import *
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
+from django.utils.html import format_html
 # Register your models here.
 admin.site.unregister(User)
 
@@ -83,6 +84,62 @@ class QuestionReportAdmin(admin.ModelAdmin):
     #     return "N/A"
     # get_question.short_description = 'Question'
 
+class ReferralCodeAdmin(admin.ModelAdmin):
+    list_display = ('ref_id', 'user', 'code', 'mobile_number', 'commission_percentage', 'is_active', 'total_uses', 'total_commission_earned', 'created_at')
+    search_fields = ('code', 'user__username', 'user__email', 'mobile_number')
+    list_filter = ('is_active', 'created_at', 'commission_percentage')
+    readonly_fields = ('total_uses', 'created_at')
+    list_editable = ('is_active',)
+    fieldsets = (
+        ('Code Information', {
+            'fields': ('user', 'code', 'mobile_number', 'is_active')
+        }),
+        ('Commission Settings', {
+            'fields': ('commission_percentage',)
+        }),
+        ('Statistics', {
+            'fields': ('total_uses', 'total_commission_earned', 'created_at'),
+            'description': 'Note: You can edit "Total Commission Earned" to reset it after paying the referrer.'
+        }),
+    )
+
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('p_id', 'user', 'amount', 'screenshot_thumbnail', 'transaction_id', 'payment_method', 'referral_code', 'referrer', 'commission_amount', 'confirmed', 'commission_paid', 'created_at')
+    search_fields = ('user__username', 'transaction_id', 'referral_code__code')
+    list_filter = ('confirmed', 'commission_paid', 'payment_method', 'created_at', 'referral_code')
+    readonly_fields = ('created_at', 'updated_at', 'commission_amount', 'screenshot_preview')
+    list_editable = ('confirmed', 'commission_paid')
+    fieldsets = (
+        ('Payment Information', {
+            'fields': ('user', 'amount', 'transaction_id', 'payment_method', 'payment_screenshot', 'screenshot_preview', 'additional_details')
+        }),
+        ('Referral Information', {
+            'fields': ('referral_code', 'referrer', 'commission_amount', 'commission_paid')
+        }),
+        ('Status', {
+            'fields': ('confirmed', 'created_at', 'updated_at')
+        }),
+    )
+    
+    def screenshot_thumbnail(self, obj):
+        if obj.payment_screenshot:
+            return format_html(
+                '<a href="{}" target="_blank"><img src="{}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; cursor: pointer;" /></a>',
+                obj.payment_screenshot.url,
+                obj.payment_screenshot.url
+            )
+        return "No Screenshot"
+    screenshot_thumbnail.short_description = 'Screenshot'
+    
+    def screenshot_preview(self, obj):
+        if obj.payment_screenshot:
+            return format_html(
+                '<img src="{}" style="max-width: 600px; max-height: 600px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />',
+                obj.payment_screenshot.url
+            )
+        return "No screenshot uploaded"
+    screenshot_preview.short_description = 'Screenshot Preview'
+
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Chapter, ChapterAdmin)
 admin.site.register(Question, QuestionAdmin)
@@ -94,3 +151,5 @@ admin.site.register(PastPaperYear, PastPaperYearAdmin)
 admin.site.register(PastPaperQuestion, PastPaperQuestionAdmin)
 admin.site.register(UserPastPaperAttempt, UserPastPaperAttemptAdmin)
 admin.site.register(QuestionReport, QuestionReportAdmin)
+admin.site.register(ReferralCode, ReferralCodeAdmin)
+admin.site.register(Payment, PaymentAdmin)

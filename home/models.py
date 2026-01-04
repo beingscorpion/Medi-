@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
+from decimal import Decimal
 
 # from phonenumber_field.phonenumber import PhoneNumber
 # from phonenumber_field.validators import validate_international_phonenumber
@@ -267,3 +268,82 @@ class QuestionReport(models.Model):
     def __str__(self):
         question_ref = self.question if self.question else self.past_paper_question
         return f"Report by {self.user.username} - {question_ref}"
+
+
+class ReferralCode(models.Model):
+    """Referral/Coupon codes that users can share"""
+    ref_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='referral_codes')
+    code = models.CharField(max_length=50, unique=True, help_text="Unique referral/coupon code")
+    mobile_number = models.CharField(max_length=15, blank=True, null=True, help_text="Mobile number for commission payments")
+    commission_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=5.00, help_text="Commission percentage for the referrer")
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    total_uses = models.PositiveIntegerField(default=0, help_text="Total number of times this code has been used")
+    total_commission_earned = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Total commission earned from this code")
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['code']),
+            models.Index(fields=['user', 'is_active']),
+        ]
+    
+    def __str__(self):
+        return f"{self.code} - {self.user.username}"
+
+
+class Payment(models.Model):
+    """Payment submissions by users"""
+    p_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, help_text="Payment amount")
+    transaction_id = models.CharField(max_length=100, blank=True, null=True, help_text="Transaction ID or reference number")
+    payment_method = models.CharField(max_length=50, blank=True, null=True, help_text="Payment method (e.g., Bank Transfer, JazzCash, EasyPaisa)")
+    payment_screenshot = models.ImageField(upload_to='payment_screenshots/', blank=True, null=True, help_text="Screenshot of payment proof")
+    additional_details = models.TextField(blank=True, null=True, help_text="Any additional payment details")
+    referral_code = models.ForeignKey(ReferralCode, on_delete=models.SET_NULL, null=True, blank=True, related_name='payments', help_text="Referral/coupon code used")
+    referrer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='referred_payments', help_text="User who referred this payment")
+    commission_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Commission amount for the referrer")
+    commission_paid = models.BooleanField(default=False, help_text="Whether commission has been paid to referrer")
+    confirmed = models.BooleanField(default=False, help_text="Manually confirmed after checking payment screenshot")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['confirmed']),
+            models.Index(fields=['referral_code']),
+            models.Index(fields=['referrer']),
+        ]
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Payment by {self.user.username} - Rs. {self.amount} - {'Confirmed' if self.confirmed else 'Pending'}"
+    
+    def save(self, *args, **kwargs):
+        # Check if this is an update and confirmed status changed
+        if self.pk:
+            try:
+                old_instance = Payment.objects.get(pk=self.pk)
+                was_confirmed = old_instance.confirmed
+            except Payment.DoesNotExist:
+                was_confirmed = False
+        else:
+            was_confirmed = False
+        
+        # Calculate commission if referral code is used
+        if self.referral_code and not self.commission_amount:
+            commission_percentage = self.referral_code.commission_percentage
+            self.commission_amount = (Decimal(str(self.amount)) * Decimal(str(commission_percentage))) / Decimal('100')
+        
+        super().save(*args, **kwargs)
+        
+        # Update referral code stats when payment is confirmed
+        if self.confirmed and not was_confirmed and self.referral_code:
+            # Increment total uses only when payment is confirmed
+            self.referral_code.total_uses += 1
+            # Update commission earned
+            if self.commission_amount:
+                self.referral_code.total_commission_earned = Decimal(str(self.referral_code.total_commission_earned)) + Decimal(str(self.commission_amount))
+            self.referral_code.save(update_fields=['total_uses', 'total_commission_earned'])
